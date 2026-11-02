@@ -2,8 +2,9 @@ package Controlador.Biblioteca;
 
 import Controlador.libro.Libro;
 import Controlador.prestamo.Prestamo;
-import Controlador.socio.Docente;
+import Controlador.Socio.Docente;
 import Controlador.socio.Socio;
+import Controlador.Socio.Estudiante;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -13,7 +14,7 @@ import Controlador.excepciones.LibroNoPrestadoException;
  *
  * @author Yleana Torres
  * @author Iara Azula
- * @author Josefina Vallejo
+ * @author Josefina Vallejos Romero
  * @version TP5 - 2026
  */
 public class Biblioteca {
@@ -116,6 +117,52 @@ public class Biblioteca {
         this.agregarSocio(p_socio);
         this.agregarLibro(p_libro);
     }
+
+    /**
+     * Construye una biblioteca con un nombre y un socio.
+     * Inicializa una coleccion vacia de Libros y agrega el socio recibido.
+     *
+     * @author Josefina Vallejos Romero
+     * @param p_nombre Nombre de la biblioteca.
+     * @param p_socio Socio que se incorpora inicialmente.
+     */
+    public Biblioteca(String p_nombre,Socio p_socio){
+        this.setNombre(p_nombre);
+        this.setLibros(new ArrayList<Libro>());
+        this.setSocios(new ArrayList<Socio>());
+        this.agregarSocio(p_socio);
+    }
+
+    /**
+     * Construye una biblioteca con un nombre y una colección de socios.
+     * Inicializa la colección de libros vacía.
+     *
+     * @author Josefina Vallejos Romero
+     * @param p_nombre Nombre de la biblioteca.
+     * @param p_socios Colección de socios que se incorpora inicialmente.
+     */
+    public Biblioteca (String p_nombre,ArrayList<Socio> p_socios){
+        this.setNombre(p_nombre);
+        this.setSocios(p_socios);
+        this.setLibros(new ArrayList<Libro>());
+    }
+
+    /**
+     * Construye una biblioteca con un nombre, una colección de socios y un libro.
+     * Inicializa las colecciones y agrega el libro recibido.
+     *
+     * @author Josefina Vallejos Romero
+     * @param p_nombre Nombre de la biblioteca.
+     * @param p_socios Colección de socios que se incorpora inicialmente.
+     * @param p_libro Libro que se incorpora inicialmente.
+     */
+    public Biblioteca (String p_nombre,ArrayList<Socio>p_socios,Libro p_libro){
+        this.setNombre(p_nombre);
+        this.setSocios(p_socios);
+        this.setLibros(new ArrayList<Libro>());
+        this.agregarLibro(p_libro);
+    }
+
     /**
      * Establece el nombre de la biblioteca. El nombre no puede ser null ni
      * estar vacío; se eliminan los espacios sobrantes al inicio y al final.
@@ -147,6 +194,21 @@ public class Biblioteca {
     }
 
     /**
+     * Asigna una colección de socios a la biblioteca.
+     *Si recibe null, inicializa una colección vacía.
+     *
+     * @author Josefina Vallejos Romero
+     * @param p_socios Colección de socios a asignar.
+     */
+    private void setSocios(ArrayList<Socio> p_socios){
+        if(p_socios != null){
+            this.socios=p_socios;
+        }else{
+            this.socios=new ArrayList<Socio>();
+        }
+    }
+
+    /**
      * Devuelve el nombre de la biblioteca.
      *
      * @author Yleana Torres
@@ -164,6 +226,16 @@ public class Biblioteca {
      */
     public ArrayList<Libro> getLibros() {
         return this.libros;
+    }
+
+    /**
+     * Devuelve la colección de socios de la biblioteca.
+     *
+     * @author Josefina Vallejos Romero
+     * @return Colección de socios registrados en la biblioteca.
+     */
+    public ArrayList<Socio> getSocios(){
+        return this.socios;
     }
 
     /**
@@ -193,6 +265,29 @@ public class Biblioteca {
     }
 
     /**
+     * Agrega un socio a la colección de socios de la biblioteca.
+     *
+     * @author Josefina Vallejos Romero
+     * @param p_socio Socio que se desea incorporar.
+     * @return true si el socio se agregó correctamente.
+     */
+    public boolean agregarSocio(Socio p_socio){
+        return this.getSocios().add(p_socio);
+    }
+
+    /**
+     * Elimina un socio de la colección de socios de la biblioteca.
+     *
+     * @author Josefina Vallejos Romero
+     * @param p_socio Socio que se desea eliminar.
+     * @return true si el socio se eliminó correctamente.
+     * false en caso contrario.
+     */
+    public boolean quitarSocio(Socio p_socio){
+        return this.getSocios().remove(p_socio);
+    }
+
+    /**
      * Crea y agrega un nuevo libro.
      *
      * @author Azula Iara
@@ -203,6 +298,30 @@ public class Biblioteca {
      */
     public void nuevoLibro(String p_titulo, int p_edicion, String p_editorial, int p_anio){
         this.agregarLibro(new Libro(p_titulo, p_edicion, p_editorial, p_anio));
+    }
+
+    /**
+     * Crea un nuevo socio estudiante y lo incorpora a la biblioteca.
+     *
+     * @author Josefina Vallejos Romero
+     * @param p_dniSocio DNI del estudiante.
+     * @param p_nombre Nombre del estudiante.
+     * @param p_carrera Carrera del estudiante.
+     */
+    public void nuevoSocioEstudiante(int p_dniSocio,String p_nombre,String p_carrera){
+        this.agregarSocio(new Estudiante(p_dniSocio,p_nombre,p_carrera));
+    }
+
+    /**
+     * Crea un nuevo socio docente y lo incorpora a la biblioteca.
+     *
+     * @author Josefina Vallejos Romero
+     * @param p_dniSocio DNI del docente.
+     * @param p_nombre Nombre del docente.
+     * @param p_area Área de desempeño del docente.
+     */
+    public void nuevoSocioDocente(int p_dniSocio, String p_nombre, String p_area){
+        this.agregarSocio(new Docente(p_dniSocio,p_nombre,p_area));
     }
 
     /**
@@ -317,6 +436,51 @@ public class Biblioteca {
         }
 
         return p_libro.ultimoPrestamo().getSocio().getNombre();
+    }
+
+    /**
+     * Genera un listado con los socios registrados en la biblioteca,
+     * indicando la cantidad de estudiantes y docentes.
+     *
+     * @author Josefina Vallejos Romero
+     * @return Cadena con la información de los socios de la biblioteca y
+     * la cantidad de socios de cada tipo.
+     */
+    public String listaDeSocios(){
+        int totalE=this.cantidadDeSociosPorTipo("Estudiante");
+        int totalD=this.cantidadDeSociosPorTipo("Docente");
+
+        int item=1; //item de los socios,empieza en 1
+        String lista = "Lista de Socios:\n\n";
+
+
+        for(Socio soc :this.getSocios()){
+            lista += item +") " +soc.toString()+"\n";
+          item++;
+        }
+
+        lista +="*".repeat(40);
+        lista +="\nCantidad de Socios del tipo Estudiante: " +totalE;
+        lista+="\nCantidad de Socios del tipo Docente: " +totalD +"\n";
+        lista +="*".repeat(40);
+
+        return lista;
+    }
+
+    /**
+     * Busca un socio en la biblioteca a partir de su DNI.
+     *
+     * @author Josefina Vallejos Romero
+     * @param p_dni DNI del socio buscado.
+     * @return El socio encontrado o null si no existe un socio con el DNI indicado.
+     */
+    public Socio buscarSocio(int p_dni){
+        for(Socio soc :this.getSocios()){
+            if(soc.getDniSocio()==p_dni){
+                return soc;
+            }
+        }
+        return null;
     }
 
     /**
