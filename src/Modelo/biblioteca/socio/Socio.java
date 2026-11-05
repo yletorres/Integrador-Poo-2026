@@ -124,7 +124,7 @@ public abstract class Socio {
     }
 
     /**
-     * Indica el tipo de socio. Cada subclase lo implementa.
+     * Indica el tipo de socio
      *
      * @return "Docente" o "Estudiante"
      */
