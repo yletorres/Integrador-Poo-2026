@@ -3,6 +3,7 @@ package Modelo.biblioteca.libro;
 import Modelo.biblioteca.prestamo.Prestamo;
 
 import java.util.ArrayList;
+
 /**
  * Clase Libro
  * - ultimoPrestamo(): retorna el último préstamo del libro. 
@@ -32,6 +33,8 @@ public class Libro {
      * @param p_edicion Número de edición.
      * @param p_editorial Nombre de la editorial.
      * @param p_anio Año de publicación.
+     *
+     * @author (Fernández, Lucía Belén)
      */
     public Libro (String p_titulo, int p_edicion, String p_editorial, int p_anio){
         this.setTitulo(p_titulo);
@@ -49,6 +52,7 @@ public class Libro {
      * @param p_editorial Nombre de la editorial.
      * @param p_anio Año de publicación.
      * @param p_prestamos Colección con el historial de préstamos del libro.
+     * @author (Fernández, Lucía Belén)
      */
     public Libro (String p_titulo, int p_edicion, String p_editorial, int p_anio, ArrayList<Prestamo> p_prestamos){
         this.setTitulo(p_titulo);
@@ -63,6 +67,7 @@ public class Libro {
      * Asigna el título al libro.
      *
      * @param p_titulo Título del libro.
+     * @author (Fernández, Lucía Belén)
      */
     private void setTitulo(String p_titulo){
         this.titulo = p_titulo;
@@ -72,6 +77,7 @@ public class Libro {
      * Asigna el número de edición.
      *
      * @param p_edicion Número de edición.
+     * @author (Fernández, Lucía Belén)
      */
     private void setEdicion(int p_edicion){
         this.edicion = p_edicion;
@@ -81,6 +87,7 @@ public class Libro {
      * Asigna el nombre de la editorial.
      *
      * @param p_editorial Nombre de la editorial.
+     * @author (Fernández, Lucía Belén)
      */
     private void setEditorial(String p_editorial){
         this.editorial = p_editorial;
@@ -90,6 +97,7 @@ public class Libro {
      * Asigna el año de publicación.
      *
      * @param p_anio Año de publicación.
+     * @author (Fernández, Lucía Belén)
      */
     private void setAnio(int p_anio){
         this.anio = p_anio;
@@ -99,6 +107,7 @@ public class Libro {
      * Asigna la colección de préstamos.
      *
      * @param p_prestamos Colección de tipo ArrayList.
+     * @author (Fernández, Lucía Belén)
      */
     private void setPrestamos(ArrayList<Prestamo> p_prestamos){
         this.prestamos = p_prestamos;
@@ -109,6 +118,7 @@ public class Libro {
      * Devuelve el título del libro.
      *
      * @return Título actual.
+     * @author (Fernández, Lucía Belén)
      */
     public String getTitulo (){
         return this.titulo;
@@ -118,6 +128,7 @@ public class Libro {
      * Devuelve el número de edición.
      *
      * @return Número de edición actual.
+     * @author (Fernández, Lucía Belén)
      */
     public int getEdicion (){
         return this.edicion;
@@ -127,6 +138,7 @@ public class Libro {
      * Devuelve el nombre de la editorial.
      *
      * @return Nombre de la editorial actual.
+     * @author (Fernández, Lucía Belén)
      */
     public String getEditorial (){
         return this.editorial;
@@ -136,6 +148,7 @@ public class Libro {
      * Devuelve el año de publicación.
      *
      * @return Año de publicación actual.
+     * @author (Fernández, Lucía Belén)
      */
     public int getAnio (){
         return this.anio;
@@ -145,6 +158,7 @@ public class Libro {
      * Devuelve el historial de préstamos del libro.
      *
      * @return Colección de objetos Prestamo.
+     * @author (Fernández, Lucía Belén)
      */
     public ArrayList<Prestamo> getPrestamos (){
         return this.prestamos;
@@ -152,11 +166,49 @@ public class Libro {
     
     /** METODOS */
 
+
+    /**
+     * Agrega un préstamo al historial de préstamos del libro.
+     * Usa doble encapsulamiento accediendo a la colección mediante
+     * this.getPrestamos() en lugar del atributo directo, y delega
+     * la inserción en el método add().
+     *
+     * @param p_prestamo Objeto Prestamo que se desea registrar en el historial del libro.
+     * @return true si el préstamo se agregó correctamente a la colección
+     * @author (Fernández, Lucía Belén)
+     */
+    public boolean agregarPrestamo(Prestamo p_prestamo) {
+        return this.getPrestamos().add(p_prestamo);
+    }
+
+    /**
+     * Quita un préstamo del historial de préstamos del libro.
+     * Utiliza doble encapsulamiento accediendo a la colección mediante
+     *  this.getPrestamos() en lugar del atributo directo, y delega
+     * la eliminación en el método remove().
+     * Si la colección está vacía, no se intenta la eliminación y se retorna
+     * false directamente.
+     *
+     * @param p_prestamo Objeto Prestamo que se desea eliminar del historial del libro.
+     * @return true si el préstamo se eliminó correctamente;
+     *         false si la colección está vacía o el préstamo no se encuentra en ella.
+     * @author (Fernández, Lucía Belén)
+     */
+    public boolean quitarPrestamo(Prestamo p_prestamo) {
+        if (this.getPrestamos().size() > 0) {
+            return this.getPrestamos().remove(p_prestamo);
+        }
+        return false;
+    }
+
+
     /**
      * Retorna el último préstamo del libro. Si la lista contiene elementos,
      * calcula la última posición restándole 1 al tamaño total de la colección
      * (size() - 1) y extrae el objeto Prestamo ubicado ahí.
      * Si la lista está vacía, retorna null para evitar un error.
+     * @return Prestamo, último préstamo del libro
+     * @author (Fernández, Lucía Belén)
      */
     public Prestamo ultimoPrestamo() {
         if (this.getPrestamos().isEmpty()) {
@@ -169,6 +221,7 @@ public class Libro {
      * Devuelve true si el libro se encuentra prestado.
      * Se obtiene el último préstamo. Si existe y su fecha de devolución
      * todavía es nula (o no está registrada), significa que el libro no fue devuelto.
+     * @author (Fernández, Lucía Belén)
      */
     public boolean prestado() {
         Prestamo ultimo = this.ultimoPrestamo();
@@ -182,6 +235,7 @@ public class Libro {
      * Devuelve una cadena de texto con el título del libro.
      *
      * @return Texto con el formato "Titulo: [titulo del libro]".
+     * @author (Fernández, Lucía Belén)
      */
     public String toString () {
         return "Titulo: " + this.getTitulo();
