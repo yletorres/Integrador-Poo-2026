@@ -49,18 +49,7 @@ public class Estudiante extends Socio {
      * 
      * @return boolean true si puede pedir, false en caso contrario.
      */
-    public boolean puedePedir() {
-        boolean sinVencidos = true;
-    
-        for (Prestamo p : this.getPrestamos()) {
-            if (p.getFechaDevolucion() == null && p.vencido(Calendar.getInstance())) {
-                sinVencidos = false;
-                break;
-            }
-        }
-    
-        return sinVencidos && (this.cantLibrosPrestados() <= 3);
-    }
+   
     @Override
     public boolean puedePedir() {
         if (this.cantLibrosPrestados() >= 3) {
