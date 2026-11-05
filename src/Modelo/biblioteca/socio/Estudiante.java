@@ -59,9 +59,16 @@ public class Estudiante extends Socio {
             }
         }
     
-        return sinVencidos && (this.cantLibrosPrestados() < 3);
+        return sinVencidos && (this.cantLibrosPrestados() <= 3);
     }
-    
+    @Override
+    public boolean puedePedir() {
+        if (this.cantLibrosPrestados() >= 3) {
+            return false;
+        }
+    // Si pasa el límite, delega las demás validaciones (como préstamos vencidos) a la clase padre
+        return super.puedePedir();
+    }
     /**
      * Retorna la clase a la que pertenece la instancia.
      * 
