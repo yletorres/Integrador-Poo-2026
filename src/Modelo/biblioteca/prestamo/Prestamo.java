@@ -14,7 +14,6 @@ import biblioteca.socio.Socio;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-
 public class Prestamo {
     private Calendar fechaRetiro;
     private Calendar fechaDevolucion;
@@ -103,4 +102,5 @@ public class Prestamo {
     resultado = resultado + "\nSocio: " + this.getSocio().getNombre();
 
     return resultado;
+    }
 }
