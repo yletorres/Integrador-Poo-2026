@@ -20,7 +20,7 @@ public class Docente extends Socio {
      * @param p_nombre Nombre del socio.
      * @param p_area Área a la que pertenece el docente.
      */
-    public docente(int p_dniSocio, String p_nombre, String p_area) {
+    public Docente(int p_dniSocio, String p_nombre, String p_area) {
         super(p_dniSocio, p_nombre, 5);
         this.setArea(p_area);
     }
