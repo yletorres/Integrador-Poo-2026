@@ -1,6 +1,6 @@
-package Modelo.biblioteca.libro;
+package biblioteca.libro;
 
-import Modelo.biblioteca.prestamo.Prestamo;
+import biblioteca.prestamo.Prestamo;
 
 import java.util.ArrayList;
 
