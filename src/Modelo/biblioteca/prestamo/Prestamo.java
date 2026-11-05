@@ -1,3 +1,8 @@
+package Modelo.biblioteca.prestamo;
+
+import Modelo.biblioteca.libro.Libro;
+import Modelo.biblioteca.socio.Socio;
+
 
 /**
  * Representa un presatamo de un libro por parte de un socio

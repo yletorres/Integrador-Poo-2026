@@ -1,4 +1,6 @@
-package Controlador.libro;
+package Modelo.biblioteca.libro;
+
+import Modelo.biblioteca.prestamo.Prestamo;
 
 import java.util.ArrayList;
 /**

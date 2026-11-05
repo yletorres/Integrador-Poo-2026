@@ -1,3 +1,7 @@
+package Modelo.biblioteca.socio;
+
+import Modelo.biblioteca.prestamo.Prestamo;
+
 import java.util.Calendar;
 
 /**

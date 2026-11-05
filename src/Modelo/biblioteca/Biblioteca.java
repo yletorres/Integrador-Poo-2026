@@ -1,14 +1,15 @@
-package Controlador.Biblioteca;
+package Modelo.biblioteca;
 
-import Controlador.libro.Libro;
-import Controlador.prestamo.Prestamo;
-import Controlador.Socio.Docente;
-import Controlador.socio.Socio;
-import Controlador.Socio.Estudiante;
+import Modelo.biblioteca.libro.Libro;
+import Modelo.biblioteca.prestamo.Prestamo;
+import Modelo.biblioteca.socio.Socio;
+import Modelo.biblioteca.socio.Docente;
+import Modelo.biblioteca.socio.Estudiante;
+import Modelo.biblioteca.excepciones.LibroNoPrestadoException;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import Controlador.excepciones.LibroNoPrestadoException;
 /**
  * Representa una biblioteca que administra sus socios y sus libros.
  *
@@ -17,7 +18,7 @@ import Controlador.excepciones.LibroNoPrestadoException;
  * @author Josefina Vallejos Romero
  * @version TP5 - 2026
  */
-public class githBiblioteca {
+public class Biblioteca {
 
     /** Nombre de la biblioteca. */
     private String nombre;
@@ -462,7 +463,7 @@ public class githBiblioteca {
         lista +="*".repeat(40);
         lista +="\nCantidad de Socios del tipo Estudiante: " +totalE;
         lista+="\nCantidad de Socios del tipo Docente: " +totalD +"\n";
-        lista +="*".repeat(40);
+        lista +="*".repeat(40) + "\n";
 
         return lista;
     }

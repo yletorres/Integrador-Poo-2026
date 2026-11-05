@@ -1,3 +1,7 @@
+package Modelo.biblioteca.socio;
+
+import Modelo.biblioteca.prestamo.Prestamo;
+
 
 /**
  * Socio de una biblioteca
