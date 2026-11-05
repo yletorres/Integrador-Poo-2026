@@ -1,11 +1,11 @@
-package Modelo.biblioteca;
+package biblioteca;
 
-import Modelo.biblioteca.libro.Libro;
-import Modelo.biblioteca.prestamo.Prestamo;
-import Modelo.biblioteca.socio.Socio;
-import Modelo.biblioteca.socio.Docente;
-import Modelo.biblioteca.socio.Estudiante;
-import Modelo.biblioteca.excepciones.LibroNoPrestadoException;
+import biblioteca.libro.Libro;
+import biblioteca.prestamo.Prestamo;
+import biblioteca.socio.Socio;
+import biblioteca.socio.Docente;
+import biblioteca.socio.Estudiante;
+import biblioteca.excepciones.LibroNoPrestadoException;
 
 import java.util.ArrayList;
 import java.util.Calendar;

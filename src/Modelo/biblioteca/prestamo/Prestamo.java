@@ -1,7 +1,7 @@
-package Modelo.biblioteca.prestamo;
+package biblioteca.prestamo;
 
-import Modelo.biblioteca.libro.Libro;
-import Modelo.biblioteca.socio.Socio;
+import biblioteca.libro.Libro;
+import biblioteca.socio.Socio;
 
 
 /**

@@ -1,4 +1,4 @@
-package Modelo.biblioteca.excepciones;
+package biblioteca.excepciones;
 
 /**
  * Excepción personalizada que se lanza cuando se intenta devolver
