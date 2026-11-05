@@ -75,7 +75,7 @@ public abstract class Socio {
      *
      * @param p_prestamo prestamo a agregar
      */
-    public void addPrestamo(Prestamo p_prestamo) {
+    public void agregarPrestamo(Prestamo p_prestamo) {
         this.getPrestamos().add(p_prestamo);
     }
 
@@ -84,7 +84,7 @@ public abstract class Socio {
      *
      * @param p_prestamo prestamo a eliminar
      */
-    public void removePrestamo(Prestamo p_prestamo) {
+    public void quitarPrestamo(Prestamo p_prestamo) {
         this.getPrestamos().remove(p_prestamo);
     }
 
@@ -124,7 +124,7 @@ public abstract class Socio {
     }
 
     /**
-     * Indica el tipo de socio. Cada subclase lo implementa.
+     * Indica el tipo de socio
      *
      * @return "Docente" o "Estudiante"
      */
