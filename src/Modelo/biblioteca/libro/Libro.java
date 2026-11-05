@@ -105,12 +105,18 @@ public class Libro {
 
     /**
      * Asigna la colección de préstamos.
+     * Si recibe null, inicializa una colección vacía para evitar
+     * NullPointerException en los métodos que operan sobre ella.
      *
      * @param p_prestamos Colección de tipo ArrayList.
      * @author (Fernández, Lucía Belén)
      */
     private void setPrestamos(ArrayList<Prestamo> p_prestamos){
-        this.prestamos = p_prestamos;
+        if (p_prestamos == null) {
+            this.prestamos = new ArrayList<Prestamo>();
+        } else {
+            this.prestamos = p_prestamos;
+        }
     }
     
     /** GETTERS */
