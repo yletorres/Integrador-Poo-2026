@@ -17,7 +17,7 @@ import Controlador.excepciones.LibroNoPrestadoException;
  * @author Josefina Vallejos Romero
  * @version TP5 - 2026
  */
-public class Biblioteca {
+public class githBiblioteca {
 
     /** Nombre de la biblioteca. */
     private String nombre;
@@ -138,10 +138,10 @@ public class Biblioteca {
      * Inicializa la colección de libros vacía.
      *
      * @author Josefina Vallejos Romero
-     * @param p_nombre Nombre de la biblioteca.
      * @param p_socios Colección de socios que se incorpora inicialmente.
+     * @param p_nombre Nombre de la biblioteca.
      */
-    public Biblioteca (String p_nombre,ArrayList<Socio> p_socios){
+    public Biblioteca (ArrayList<Socio> p_socios,String p_nombre){
         this.setNombre(p_nombre);
         this.setSocios(p_socios);
         this.setLibros(new ArrayList<Libro>());
