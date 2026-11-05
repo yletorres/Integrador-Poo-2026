@@ -5,7 +5,7 @@ import Modelo.biblioteca.socio.Socio;
 
 
 /**
- * Representa un presatamo de un libro por parte de un socio
+ * Representa un prestamo de un libro por parte de un socio
  * 
  * @author (Palacios, Evangelina) 
  * @version (1.0)
@@ -87,15 +87,20 @@ public class Prestamo {
      *
      * @return texto con el formato pedido
      */
-    public String toString() {
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
-        String devolucion = (this.getFechaDevolucion() == null)
-                ? "Sin devolver"
-                : formato.format(this.getFechaDevolucion().getTime());
+   public String toString() {
+    SimpleDateFormat formato = new SimpleDateFormat("yyyy/MM/dd");
 
-        return "Retiro: " + formato.format(this.getFechaRetiro().getTime())
-                + " - Devolucion: " + devolucion
-                + "\nLibro: " + this.getLibro().getTitulo()
-                + "\nSocio: " + this.getSocio().getNombre();
-    }
+    String devolucion;
+      if (this.getFechaDevolucion() == null) {
+        devolucion = "Sin devolver";
+      } else {
+        devolucion = formato.format(this.getFechaDevolucion().getTime());
+     }
+
+    String resultado = "Retiro: " + formato.format(this.getFechaRetiro().getTime());
+    resultado = resultado + " - Devolucion: " + devolucion;
+    resultado = resultado + "\nLibro: " + this.getLibro().getTitulo();
+    resultado = resultado + "\nSocio: " + this.getSocio().getNombre();
+
+    return resultado;
 }
