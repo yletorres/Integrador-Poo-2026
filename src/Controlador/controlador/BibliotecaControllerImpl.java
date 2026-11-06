@@ -1,15 +1,14 @@
 package controlador;
 
 import biblioteca.Biblioteca;
-import controlador.dao.BibliotecaDAO;
 import biblioteca.excepciones.LibroNoPrestadoException;
+import controlador.dao.BibliotecaDAO;
 
 import java.util.List;
 
 public class BibliotecaControllerImpl implements BibliotecaController{
 
     private BibliotecaDAO bibliotecaDAO;
-
     private Biblioteca bibliotecaSeleccionada;
     private int idBibliotecaSeleccionada;
 
@@ -51,14 +50,27 @@ public class BibliotecaControllerImpl implements BibliotecaController{
 
     // >>> libros <<<<
     /** col: titulo, edicion, editorial, anio, prestado ("Si"/"No") como da la catedra*/
-    List<Object[]> filasLibros();
-    void nuevoLibro(String titulo, int edicion, String editorial, int anio);
+    List<Object[]> filasLibros(){
+
+
+    }
+
+    void nuevoLibro(String titulo, int edicion, String editorial, int anio){
+
+
+    }
 
     // >>> socios <<<
     /** col: dni, nombre, tipo ("Docente"/"Estudiante"), librosPrestados */
-    List<Object[]> filasSocios();
-    void nuevoSocioEstudiante(int dni, String nombre, String carrera);
-    void nuevoSocioDocente(int dni, String nombre, String area);
+    List<Object[]> filasSocios(){
+
+    }
+    void nuevoSocioEstudiante(int dni, String nombre, String carrera){
+
+    }
+    void nuevoSocioDocente(int dni, String nombre, String area){
+
+    }
 
     // >>> préstamos <<<
     /** @return false si el socio no puede pedir o el libro ya está prestado, como pide la excepción */
