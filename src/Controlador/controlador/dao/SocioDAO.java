@@ -8,4 +8,6 @@ public interface SocioDAO {
     List<Socio> obtenerPorBiblioteca(int idBiblioteca);
 
     void insertar(Socio socio, int idBiblioteca);
+
+    Socio buscarPorDni(int dniSocio);
 }
