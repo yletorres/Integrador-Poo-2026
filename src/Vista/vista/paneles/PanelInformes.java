@@ -23,6 +23,7 @@ class PanelInformes extends PanelSeccion {
     PanelInformes(BibliotecaController controlador) {
         this.controlador = controlador;
         add(encabezado("Informes", "Las consultas que necesita la administración de la biblioteca"), BorderLayout.NORTH);
+        docentes.setColorTexto(Tema.TEXTO_CLARO);
 
         JPanel arriba = new JPanel(new GridLayout(1, 2, 22, 0));
         arriba.setOpaque(false);
@@ -40,20 +41,24 @@ class PanelInformes extends PanelSeccion {
     private Tarjeta tarjetaCantidad() {
         JLabel numero = new JLabel("–");
         numero.setFont(Tema.sans(Font.BOLD, 56));
-        numero.setForeground(Tema.TEXTO);
+        numero.setForeground(Tema.TEXTO_CLARO);
         JLabel detalle = new JLabel("Elegí un tipo de socio.");
         detalle.setFont(Tema.sans(Font.PLAIN, 15));
-        detalle.setForeground(Tema.TEXTO_SUAVE);
+        detalle.setForeground(Tema.conAlfa(Tema.TEXTO_CLARO, 190));
 
-        Boton estudiantes = new Boton("Estudiantes");
+        Boton estudiantes = new Boton("Estudiantes", Boton.Estilo.SALIDA);
+        Boton docentesBtn = new Boton("Docentes", Boton.Estilo.SALIDA);
         estudiantes.addActionListener(e -> {
             numero.setText(String.valueOf(controlador.cantidadDeSociosPorTipo("Estudiante")));
             detalle.setText("estudiantes");
+            estudiantes.setEstilo(Boton.Estilo.PRINCIPAL);
+            docentesBtn.setEstilo(Boton.Estilo.SALIDA);
         });
-        Boton docentesBtn = new Boton("Docentes");
         docentesBtn.addActionListener(e -> {
             numero.setText(String.valueOf(controlador.cantidadDeSociosPorTipo("Docente")));
             detalle.setText("docentes");
+            docentesBtn.setEstilo(Boton.Estilo.PRINCIPAL);
+            estudiantes.setEstilo(Boton.Estilo.SALIDA);
         });
 
         JPanel resultado = new JPanel();
@@ -76,7 +81,7 @@ class PanelInformes extends PanelSeccion {
         campo.setBorder(BorderFactory.createEmptyBorder());
         campo.setFont(Tema.sans(Font.PLAIN, 15));
         campo.setForeground(Tema.TEXTO);
-        campo.setCaretColor(Tema.CARBON);
+        campo.setCaretColor(Tema.CAFE_OSCURO);
         Tarjeta caja = new Tarjeta(Color.WHITE, 40);
         caja.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         caja.add(campo, BorderLayout.CENTER);
@@ -86,13 +91,13 @@ class PanelInformes extends PanelSeccion {
         estado.setAlignmentX(Component.LEFT_ALIGNMENT);
         JLabel resultado = new JLabel("Escribí el título tal como figura en el catálogo.");
         resultado.setFont(Tema.sans(Font.PLAIN, 16));
-        resultado.setForeground(Tema.TEXTO_SUAVE);
+        resultado.setForeground(Tema.conAlfa(Tema.TEXTO_CLARO, 170));
         resultado.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // busca el libro y muestra quién lo tiene o si sigue en la biblioteca
         ActionListener buscar = e -> {
             String titulo = campo.getText().trim();
-            resultado.setForeground(Tema.TEXTO);
+            resultado.setForeground(Tema.TEXTO_CLARO);
             if (titulo.isEmpty()) {
                 estado.setVisible(false);
                 resultado.setText("Escribí el título del libro.");
@@ -100,10 +105,10 @@ class PanelInformes extends PanelSeccion {
             }
             try {
                 String socio = controlador.quienTieneElLibro(titulo);
-                estado.mostrar("Prestado", Tema.MENTA, Tema.TINTA_MENTA);
+                estado.mostrar("Prestado", Tema.TERRACOTA, Tema.TINTA_TERRACOTA);
                 resultado.setText("Lo tiene " + socio + ".");
             } catch (LibroNoPrestadoException ex) {
-                estado.mostrar("En biblioteca", Tema.CARBON, Color.WHITE);
+                estado.mostrar("En biblioteca", Tema.CARAMELO, Tema.TEXTO);
                 resultado.setText(ex.getMessage()); // mensaje del modelo, sin reescribir
             }
         };
@@ -137,7 +142,9 @@ class PanelInformes extends PanelSeccion {
         Tarjeta t = new Tarjeta(Tema.PANEL, 30);
         t.setLayout(new BorderLayout(0, 14));
         t.setBorder(BorderFactory.createEmptyBorder(22, 26, 20, 26));
-        t.add(subtitulo(titulo), BorderLayout.NORTH);
+        JLabel encabezadoTarjeta = subtitulo(titulo);
+        encabezadoTarjeta.setForeground(Tema.TEXTO_CLARO);
+        t.add(encabezadoTarjeta, BorderLayout.NORTH);
         JPanel cuerpo = new JPanel(new BorderLayout(0, 14));
         cuerpo.setOpaque(false);
         if (controles != null) cuerpo.add(controles, BorderLayout.NORTH);

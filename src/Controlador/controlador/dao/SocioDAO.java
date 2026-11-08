@@ -10,4 +10,6 @@ public interface SocioDAO {
     void insertar(Socio socio, int idBiblioteca);
 
     Socio buscarPorDni(int dniSocio);
+
+    boolean eliminar(int dniSocio, String tipo);
 }

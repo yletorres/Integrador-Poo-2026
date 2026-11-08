@@ -51,6 +51,10 @@ public interface BibliotecaController { /* define métodos que otras clases est�
      */
     public abstract List<Object[]> filasLibros();
 
+    public abstract List<Object[]> filasLibrosConId();
+
+    public abstract void eliminarLibro(int p_idLibro);
+
     /**
      * Agrega un libro a la biblioteca seleccionada.
      *
@@ -72,6 +76,7 @@ public interface BibliotecaController { /* define métodos que otras clases est�
      */
     public abstract List<Object[]> filasSocios();
 
+    public abstract void eliminarSocio(int p_dni);
     /**
      * Registra un socio estudiante en la biblioteca seleccionada.
      *
@@ -158,4 +163,22 @@ public interface BibliotecaController { /* define métodos que otras clases est�
      * @return texto con la lista de docentes responsables
      */
     public abstract String listaDeDocentesResponsables();
+
+/**
+ * Devuelve las filas de libros con el id como primera columna.
+ * Columnas: id, título, edición, editorial, año y prestado ("Si" o "No").
+ *
+ * @return una fila por cada libro
+ */
+public abstract List<Object[]> filasLibrosConId();
+
+/**
+ * Elimina un libro de la biblioteca seleccionada.
+ *
+ * @param p_idLibro id del libro a eliminar
+ * @throws IllegalArgumentException si no existe un libro con ese id
+ * @throws IllegalStateException    si el libro está prestado
+ */
+public abstract void eliminarLibro(int p_idLibro);
+
 }

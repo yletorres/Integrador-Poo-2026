@@ -64,7 +64,7 @@ class PanelTabla extends PanelSeccion {
                 setForeground(Tema.TEXTO_SUAVE);
                 setFont(Tema.sans(Font.BOLD, 13));
                 setBorder(BorderFactory.createCompoundBorder(
-                        BorderFactory.createMatteBorder(0, 0, 3, 0, Tema.MENTA),
+                        BorderFactory.createMatteBorder(0, 0, 3, 0, Tema.TERRACOTA),
                         BorderFactory.createEmptyBorder(0, 18, 0, 18)));
                 return this;
             }

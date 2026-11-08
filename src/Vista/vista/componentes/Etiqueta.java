@@ -8,7 +8,7 @@ import java.awt.*;
 // etiqueta de estado con forma de píldora para mostrar si un libro esta prestado o disponible
 public class Etiqueta extends JLabel {
 
-    private Color fondo = Tema.MENTA;
+    private Color fondo = Tema.TERRACOTA;
 
     public Etiqueta() {
         setOpaque(false);

@@ -31,7 +31,7 @@ class PanelInicio extends PanelSeccion {
     private final JLabel nombre = new JLabel();
     private final JLabel detalleBiblioteca = new JLabel();
     private final JLabel resumen = new JLabel();
-    private final Anillo anilloResumen = new Anillo(Tema.conAlfa(Color.WHITE, 110), Tema.CARBON, Tema.TINTA_MENTA, 11f);
+    private final Anillo anilloResumen = new Anillo(Tema.conAlfa(Color.WHITE, 110), Tema.CAFE_OSCURO, Tema.TINTA_TERRACOTA, 11f);
     private final GraficoBarras grafico = new GraficoBarras();
     private final Anillo anilloSocios = anilloEstado();
     private final Anillo anilloDocentes = anilloEstado();
@@ -43,6 +43,7 @@ class PanelInicio extends PanelSeccion {
         this.bibliotecaActiva = bibliotecaActiva;
 
         add(encabezado(saludo, fecha), BorderLayout.NORTH);
+        saludo.setFont(Tema.sans(Font.BOLD, 36));
 
         JPanel superior = new JPanel(new GridLayout(1, 2, 22, 0));
         superior.setOpaque(false);
@@ -72,13 +73,13 @@ class PanelInicio extends PanelSeccion {
         Tarjeta t = Tarjeta.degradada(36, 36, 80, 36);
         t.setLayout(new BorderLayout(22, 0));
         t.setBorder(BorderFactory.createEmptyBorder(22, 28, 22, 40));
-        t.add(new Avatar(96), BorderLayout.WEST);
+        t.add(centradoVertical(new Avatar(96)), BorderLayout.WEST);
 
         JLabel rotulo = texto("Biblioteca", 13, Font.BOLD);
         nombre.setFont(Tema.sans(Font.BOLD, 24));
-        nombre.setForeground(Tema.TINTA_MENTA);
+        nombre.setForeground(Tema.TINTA_TERRACOTA);
         detalleBiblioteca.setFont(Tema.sans(Font.PLAIN, 14));
-        detalleBiblioteca.setForeground(Tema.TINTA_MENTA);
+        detalleBiblioteca.setForeground(Tema.TINTA_TERRACOTA);
         t.add(columna(rotulo, nombre, detalleBiblioteca), BorderLayout.CENTER);
         return t;
     }
@@ -92,7 +93,7 @@ class PanelInicio extends PanelSeccion {
 
         JLabel rotulo = texto("Libros en circulación", 15, Font.BOLD);
         resumen.setFont(Tema.sans(Font.PLAIN, 14));
-        resumen.setForeground(Tema.TINTA_MENTA);
+        resumen.setForeground(Tema.TINTA_TERRACOTA);
         t.add(columna(rotulo, resumen), BorderLayout.CENTER);
         return t;
     }
@@ -101,7 +102,8 @@ class PanelInicio extends PanelSeccion {
         Tarjeta t = new Tarjeta(Tema.PANEL, 32);
         t.setLayout(new BorderLayout(0, 10));
         t.setBorder(BorderFactory.createEmptyBorder(22, 28, 20, 24));
-        t.add(subtitulo("Libros prestados por socio"), BorderLayout.NORTH);
+        t.add(subtituloClaro("Libros prestados por socio"), BorderLayout.NORTH);
+        grafico.setAyuda("Registrá un préstamo desde la sección Préstamos.");
         t.add(grafico, BorderLayout.CENTER);
         return t;
     }
@@ -110,7 +112,7 @@ class PanelInicio extends PanelSeccion {
         Tarjeta t = new Tarjeta(Tema.PANEL, 32);
         t.setLayout(new BorderLayout(0, 12));
         t.setBorder(BorderFactory.createEmptyBorder(22, 26, 20, 22));
-        t.add(subtitulo("Estado de préstamos"), BorderLayout.NORTH);
+        t.add(subtituloClaro("Estado de préstamos"), BorderLayout.NORTH);
 
         JPanel filas = new JPanel(new GridLayout(2, 1, 0, 8));
         filas.setOpaque(false);
@@ -122,8 +124,8 @@ class PanelInicio extends PanelSeccion {
 
     // crea los anillos que muestran las proporciones del resumen
     private static Anillo anilloEstado() {
-        Anillo a = new Anillo(Tema.CARBON, Tema.MENTA, Tema.TEXTO, 13f);
-        a.setPreferredSize(new Dimension(112, 112));
+        Anillo a = new Anillo(Tema.conAlfa(Tema.CARAMELO, 70), Tema.CARAMELO, Tema.TEXTO_CLARO, 10f);
+        a.setPreferredSize(new Dimension(84, 84));
         return a;
     }
 
@@ -133,11 +135,24 @@ class PanelInicio extends PanelSeccion {
         p.setOpaque(false);
         p.add(anillo, BorderLayout.WEST);
         JLabel t = new JLabel(titulo);
-        t.setFont(Tema.sans(Font.BOLD, 14));
-        t.setForeground(Tema.TEXTO);
-        detalle.setFont(Tema.sans(Font.PLAIN, 13));
-        detalle.setForeground(Tema.TEXTO_SUAVE);
+        t.setFont(Tema.sans(Font.BOLD, 15));
+        t.setForeground(Tema.TEXTO_CLARO);
+        detalle.setFont(Tema.sans(Font.PLAIN, 14));
+        detalle.setForeground(Tema.conAlfa(Tema.TEXTO_CLARO, 190));
         p.add(columna(t, detalle), BorderLayout.CENTER);
+        return p;
+    }
+
+    private static JLabel subtituloClaro(String texto) {
+        JLabel l = subtitulo(texto);
+        l.setForeground(Tema.TEXTO_CLARO);
+        return l;
+    }
+
+    private static JPanel centradoVertical(JComponent c) {
+        JPanel p = new JPanel(new GridBagLayout());
+        p.setOpaque(false);
+        p.add(c);
         return p;
     }
 
@@ -145,7 +160,7 @@ class PanelInicio extends PanelSeccion {
     private static JLabel texto(String s, int tamanio, int estilo) {
         JLabel l = new JLabel(s);
         l.setFont(Tema.sans(estilo, tamanio));
-        l.setForeground(Tema.TINTA_MENTA);
+        l.setForeground(Tema.TINTA_TERRACOTA);
         return l;
     }
 
@@ -190,13 +205,13 @@ class PanelInicio extends PanelSeccion {
         for (Object[] s : socios) if (cantidad(s) > 0) conPrestamos++;
         double proporcionSocios = socios.isEmpty() ? 0 : conPrestamos / (double) socios.size();
         anilloSocios.setValor(proporcionSocios, porcentaje(proporcionSocios));
-        detalleSocios.setText(conPrestamos + " de " + socios.size());
+        detalleSocios.setText(socios.isEmpty() ? "Sin actividad" : conPrestamos + " de " + socios.size());
 
         int docentes = 0;
         for (Object[] sc : socios) if ("Docente".equals(sc[2])) docentes++;
         double proporcionDocentes = socios.isEmpty() ? 0 : docentes / (double) socios.size();
         anilloDocentes.setValor(proporcionDocentes, porcentaje(proporcionDocentes));
-        detalleDocentes.setText(docentes + " de " + socios.size());
+        detalleDocentes.setText(socios.isEmpty() ? "Sin actividad" : docentes + " de " + socios.size());
 
         List<Object[]> ordenados = new ArrayList<>(socios);
         ordenados.sort((a, b) -> Integer.compare(cantidad(b), cantidad(a)));

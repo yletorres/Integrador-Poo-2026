@@ -18,10 +18,15 @@ public class Listado extends JScrollPane {
         area.setLineWrap(false);
         area.setFont(Tema.mono(14));
         area.setForeground(Tema.TEXTO);
-        area.setCaretColor(Tema.CARBON);
+        area.setCaretColor(Tema.CAFE_OSCURO);
         area.setSelectionColor(Tema.SELECCION);
         area.setBorder(BorderFactory.createEmptyBorder());
         Tema.estilizar(this);
+    }
+
+    public void setColorTexto(Color color) {
+        area.setForeground(color);
+        area.setCaretColor(color);
     }
 
     public void setTexto(String texto) {

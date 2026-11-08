@@ -27,7 +27,7 @@ public class Tarjeta extends JPanel {
 
     // crea una tarjeta con degradado y permite elegir el redondeo de cada esquina
     public static Tarjeta degradada(int tl, int tr, int br, int bl) {
-        return new Tarjeta(Tema.MENTA, true, tl, tr, br, bl);
+        return new Tarjeta(Tema.TERRACOTA, true, tl, tr, br, bl);
     }
 
     @Override

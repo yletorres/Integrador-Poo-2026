@@ -13,9 +13,15 @@ public class GraficoBarras extends JComponent {
     private List<String> nombres = new ArrayList<>();
     private List<Integer> valores = new ArrayList<>();
     private String vacio = "Todavía no hay datos.";
+    private String ayuda = "";
 
     public GraficoBarras() {
         setPreferredSize(new Dimension(520, 260));
+    }
+
+    public void setAyuda(String ayuda) {
+        this.ayuda = ayuda;
+        repaint();
     }
 
     public void setDatos(List<String> nombres, List<Integer> valores, String mensajeVacio) {
@@ -35,10 +41,21 @@ public class GraficoBarras extends JComponent {
         
         // muestra un mensaje si todavia no hay valores para graficar
         if (valores.isEmpty() || max == 0) {
-            g2.setFont(Tema.sans(Font.PLAIN, 15));
-            g2.setColor(Tema.TEXTO_SUAVE);
+            int icono = 72;
+            int bloque = icono + 20 + 22 + (ayuda.isEmpty() ? 0 : 26);
+            int y0 = (h - bloque) / 2;
+            Icono.dibujar(g2, Icono.Tipo.LIBRO_VACIO, (w - icono) / 2.0, y0, icono, Tema.conAlfa(Tema.CARAMELO, 150));
+            g2.setFont(Tema.sans(Font.BOLD, 16));
+            g2.setColor(Tema.TEXTO_CLARO);
             FontMetrics fm = g2.getFontMetrics();
-            g2.drawString(vacio, (w - fm.stringWidth(vacio)) / 2, h / 2);
+            int yTexto = y0 + icono + 20 + fm.getAscent();
+            g2.drawString(vacio, (w - fm.stringWidth(vacio)) / 2, yTexto);
+            if (!ayuda.isEmpty()) {
+                g2.setFont(Tema.sans(Font.PLAIN, 14));
+                g2.setColor(Tema.conAlfa(Tema.TEXTO_CLARO, 180));
+                FontMetrics fa = g2.getFontMetrics();
+                g2.drawString(ayuda, (w - fa.stringWidth(ayuda)) / 2, yTexto + 26);
+            }
             g2.dispose();
             return;
         }
@@ -54,10 +71,10 @@ public class GraficoBarras extends JComponent {
         FontMetrics fm = g2.getFontMetrics();
         for (int v = 0; v <= techo; v += paso) {
             int y = arriba + ph - (int) Math.round(ph * v / (double) techo);
-            g2.setColor(Tema.LINEA);
+            g2.setColor(Tema.conAlfa(Tema.TEXTO_CLARO, 45));
             g2.setStroke(new BasicStroke(1f));
             g2.drawLine(izq, y, izq + pw, y);
-            g2.setColor(Tema.TEXTO_SUAVE);
+            g2.setColor(Tema.conAlfa(Tema.TEXTO_CLARO, 180));
             String t = String.valueOf(v);
             g2.drawString(t, izq - 8 - fm.stringWidth(t), y + fm.getAscent() / 2 - 1);
         }
@@ -70,15 +87,15 @@ public class GraficoBarras extends JComponent {
             int v = valores.get(i);
             int x = (int) (izq + i * ranura + (ranura - ancho) / 2);
             int alto = (int) Math.round(ph * v / (double) techo);
-            g2.setColor(i % 2 == 0 ? Tema.MENTA : Tema.CARBON);
+            g2.setColor(i % 2 == 0 ? Tema.CARAMELO : Tema.TEXTO_CLARO);
             if (alto > 0) {
                 g2.fill(Tema.forma(x, arriba + ph - alto, ancho, alto, 7, 7, 0, 0));
             }
-            g2.setColor(Tema.TEXTO);
+            g2.setColor(Tema.TEXTO_CLARO);
             g2.setFont(Tema.sans(Font.BOLD, 12));
             String num = String.valueOf(v);
             g2.drawString(num, x + (ancho - g2.getFontMetrics().stringWidth(num)) / 2, arriba + ph - alto - 6);
-            g2.setColor(Tema.TEXTO_SUAVE);
+            g2.setColor(Tema.conAlfa(Tema.TEXTO_CLARO, 180));
             g2.setFont(Tema.sans(Font.PLAIN, 12));
             String eje = String.valueOf(i + 1);
             g2.drawString(eje, x + (ancho - g2.getFontMetrics().stringWidth(eje)) / 2, arriba + ph + 20);
@@ -90,9 +107,9 @@ public class GraficoBarras extends JComponent {
         FontMetrics fl = g2.getFontMetrics();
         for (int i = 0; i < n; i++) {
             int y = arriba + 6 + i * 26;
-            g2.setColor(i % 2 == 0 ? Tema.MENTA : Tema.CARBON);
+            g2.setColor(i % 2 == 0 ? Tema.CARAMELO : Tema.TEXTO_CLARO);
             g2.fillRoundRect(x0, y, 12, 12, 4, 4);
-            g2.setColor(Tema.TEXTO);
+            g2.setColor(Tema.TEXTO_CLARO);
             g2.drawString((i + 1) + "  " + recortar(nombres.get(i), fl, leyenda - 36), x0 + 22, y + 11);
         }
         g2.dispose();

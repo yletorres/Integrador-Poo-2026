@@ -9,12 +9,34 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
+/**
+ * Panel encargado de visualizar y gestionar los socios de una biblioteca.
+ *
+ * Permite registrar estudiantes y docentes, modificar sus datos,
+ * eliminar socios y consultar la cantidad de libros que tienen prestados.
+ *
+ * La comunicación con la lógica del sistema se realiza mediante
+ * la interfaz BibliotecaController.
+ *
+ * @author Azula Iara
+ * @version TP7 - 2026
+ */
 public class PanelSocios extends PanelSeccion {
 
+    /** Controlador encargado de gestionar las operaciones de los socios. */
     private final BibliotecaController controlador;
+    /** Modelo que administra los datos mostrados en la tabla. */
     private final DefaultTableModel modelo;
+    /** Tabla que muestra los socios registrados en la biblioteca. */
     private final JTable tabla;
 
+    /**
+     * Construye el panel de socios, configura la tabla y agrega los botones
+     * para registrar y eliminar socios.
+     *
+     * @param p_controlador controlador encargado de gestionar las operaciones
+     *                      relacionadas con los socios
+     */
     public PanelSocios(BibliotecaController p_controlador) {
         this.controlador = p_controlador;
 
@@ -40,15 +62,12 @@ public class PanelSocios extends PanelSeccion {
         acciones.setOpaque(false);
 
         JButton nuevo = new JButton(" + Nuevo socio ");
-        JButton modificar = new JButton("Modificar");
         JButton eliminar = new JButton("Eliminar");
 
         nuevo.addActionListener(e -> nuevoSocio());
-        modificar.addActionListener(e -> modificarSocio());
         eliminar.addActionListener(e -> eliminarSocio());
 
         acciones.add(nuevo);
-        acciones.add(modificar);
         acciones.add(eliminar);
 
         JPanel inferior = new JPanel(new BorderLayout());
@@ -61,6 +80,12 @@ public class PanelSocios extends PanelSeccion {
         refrescar();
     }
 
+    /**
+     * Configura la apariencia visual de la tabla de socios.
+     *
+     * Establece la altura de las filas, los colores, la tipografía,
+     * la selección y las características de la cabecera.
+     */
     private void configurarTabla() {
         tabla.setRowHeight(46);
         tabla.setFont(Tema.sans(Font.PLAIN, 14));
@@ -78,6 +103,16 @@ public class PanelSocios extends PanelSeccion {
         tabla.getTableHeader().setReorderingAllowed(false);
     }
 
+    /**
+     * Solicita los datos necesarios para registrar un nuevo socio.
+     *
+     * Permite seleccionar si el socio es estudiante o docente y solicita
+     * la carrera o el área correspondiente.
+     *
+     * Valida que los campos estén completos y que el DNI sea un número
+     * positivo. Luego solicita al controlador registrar el socio
+     * y actualiza la tabla.
+     */
     private void nuevoSocio() {
         JTextField dni = new JTextField();
         JTextField nombre = new JTextField();
@@ -139,59 +174,13 @@ public class PanelSocios extends PanelSeccion {
         }
     }
 
-    private void modificarSocio() {
-        int fila = tabla.getSelectedRow();
-
-        if (fila == -1) {
-            mostrarError("Seleccioná un socio de la tabla.");
-            return;
-        }
-
-        try {
-            int filaModelo = tabla.convertRowIndexToModel(fila);
-            int dni = ((Number) modelo.getValueAt(filaModelo, 0)).intValue();
-
-            String nombreActual = modelo.getValueAt(filaModelo, 1).toString();
-            String tipoActual = modelo.getValueAt(filaModelo, 2).toString();
-
-            JTextField nombre = new JTextField(nombreActual);
-            JTextField dato = new JTextField(controlador.datoEspecificoSocio(dni));
-
-            String etiqueta = tipoActual.equals("Estudiante") ? "Carrera:" : "Área:";
-
-            JPanel formulario = new JPanel(new GridLayout(0, 1, 5, 5));
-            formulario.add(new JLabel("Nombre:"));
-            formulario.add(nombre);
-            formulario.add(new JLabel(etiqueta));
-            formulario.add(dato);
-
-            int resultado = JOptionPane.showConfirmDialog(
-                    this,
-                    formulario,
-                    "Modificar socio",
-                    JOptionPane.OK_CANCEL_OPTION,
-                    JOptionPane.PLAIN_MESSAGE
-            );
-
-            if (resultado != JOptionPane.OK_OPTION) {
-                return;
-            }
-
-            if (nombre.getText().trim().isEmpty() || dato.getText().trim().isEmpty()) {
-                throw new IllegalArgumentException("Completá todos los campos.");
-            }
-
-            controlador.modificarSocio(dni, nombre.getText().trim(), dato.getText().trim());
-
-            refrescar();
-
-            JOptionPane.showMessageDialog(this, "Socio modificado correctamente.");
-
-        } catch (Exception ex) {
-            mostrarError(ex.getMessage());
-        }
-    }
-
+    /**
+     * Elimina el socio seleccionado de la biblioteca.
+     *
+     * Verifica que exista una fila seleccionada, solicita confirmación
+     * y comunica la eliminación al controlador.
+     * Si la operación se realiza correctamente, actualiza la tabla.
+     */
     private void eliminarSocio() {
         int fila = tabla.getSelectedRow();
 
@@ -221,10 +210,22 @@ public class PanelSocios extends PanelSeccion {
         }
     }
 
+    /**
+     * Muestra un mensaje de error mediante una ventana de diálogo.
+     *
+     * @param mensaje descripción del error ocurrido; si es null,
+     *                se muestra un mensaje genérico
+     */
     private void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje == null ? "Ocurrió un error." : mensaje,"Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    /**
+     * Actualiza la tabla con los socios de la biblioteca seleccionada.
+     *
+     * Elimina las filas existentes y agrega los datos obtenidos
+     * desde el controlador.
+     */
     @Override
     public void refrescar() {
         modelo.setRowCount(0);
