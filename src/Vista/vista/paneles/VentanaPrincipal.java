@@ -18,18 +18,50 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
-
-// ventana principal con el menu lateral y las distintas pantallas del sistema
+/**
+ * Ventana principal con el menú lateral y las distintas pantallas del
+ * sistema.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 public class VentanaPrincipal extends JFrame {
 
+    /**
+     * Controlador que provee los datos y las operaciones de la biblioteca.
+     */
     private final BibliotecaController controlador;
+
+    /**
+     * Administrador de diseño que permite cambiar entre pantallas.
+     */
     private final CardLayout cartas = new CardLayout();
+
+    /**
+     * Panel que contiene las pantallas del sistema.
+     */
     private final JPanel contenido = new JPanel(cartas);
+
+    /**
+     * Selector de la biblioteca activa.
+     */
     private final Selector selector = new Selector();
+
+    /**
+     * Botones del menú lateral, indexados por el nombre de su pantalla.
+     */
     private final Map<String, BotonMenu> botones = new LinkedHashMap<>();
+
+    /**
+     * Pantallas del sistema, indexadas por su nombre.
+     */
     private final Map<String, PanelSeccion> pantallas = new HashMap<>();
 
+    /**
+     * Crea la ventana principal con el menú lateral y todas las pantallas.
+     *
+     * @param controlador controlador que provee los datos de la biblioteca
+     */
     public VentanaPrincipal(BibliotecaController controlador) {
         super("Gestión de Biblioteca");
         this.controlador = controlador;
@@ -61,33 +93,54 @@ public class VentanaPrincipal extends JFrame {
         mostrar("Inicio");
     }
 
-    // devuelve el nombre de la biblioteca seleccionada
+    /**
+     * Devuelve el nombre de la biblioteca seleccionada.
+     *
+     * @return el nombre de la biblioteca activa, o "Sin biblioteca" si no hay ninguna
+     */
     private String nombreDeBiblioteca() {
         String n = (String) selector.getSelectedItem();
         return n == null ? "Sin biblioteca" : n;
     }
 
-    // agrega una pantalla al contenido y la guarda para poder encontrarla despues
+    /**
+     * Agrega una pantalla al contenido y la guarda para poder encontrarla
+     * después.
+     *
+     * @param nombre   nombre con el que se identifica la pantalla
+     * @param pantalla pantalla a agregar
+     */
     private void agregar(String nombre, PanelSeccion pantalla) {
         pantallas.put(nombre, pantalla);
         contenido.add(pantalla, nombre);
     }
 
-    // cambia de pantalla y actualiza sus datos antes de mostrarla
+    /**
+     * Cambia de pantalla y actualiza sus datos antes de mostrarla.
+     *
+     * @param nombre nombre de la pantalla a mostrar
+     */
     public void mostrar(String nombre) {
         cartas.show(contenido, nombre);
         botones.forEach((clave, boton) -> boton.setActivo(clave.equals(nombre)));
         pantallas.get(nombre).refrescar();
     }
 
-    // actualiza la pantalla que se encuentra visible
+    /**
+     * Actualiza la pantalla que se encuentra visible.
+     */
     private void refrescarVisible() {
         for (PanelSeccion p : pantallas.values()) {
             if (p.isVisible()) p.refrescar();
         }
     }
 
-    // menu lateral 
+    /**
+     * Crea el menú lateral con el selector de biblioteca, los botones de
+     * cada pantalla y el botón de salida.
+     *
+     * @return el componente con el menú lateral
+     */
     private JComponent crearMenuLateral() {
         JPanel menu = new FondoOscuro(40);
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
@@ -104,12 +157,12 @@ public class VentanaPrincipal extends JFrame {
 
         menu.add(centrado("Biblioteca activa", Tema.sans(Font.PLAIN, 12), Tema.TEXTO_CLARO));
         menu.add(Box.createVerticalStrut(6));
-        
+
         // carga las bibliotecas disponibles en el selector
         for (String nombre : controlador.nombresDeBibliotecas()) {
             selector.addItem(nombre);
         }
-        
+
         // cambia la biblioteca activa y actualiza los datos de la pantalla actual
         selector.addActionListener(e -> {
             controlador.seleccionarBiblioteca((String) selector.getSelectedItem());
@@ -123,7 +176,12 @@ public class VentanaPrincipal extends JFrame {
         }
 
         menu.add(conMargen(selector, 44));
-        menu.add(Box.createVerticalStrut(26));
+        menu.add(Box.createVerticalStrut(6));
+
+        Boton nueva = new Boton("Nueva biblioteca", Boton.Estilo.TEXTO);
+        nueva.addActionListener(e -> nuevaBiblioteca());
+        menu.add(conMargen(nueva, 36));
+        menu.add(Box.createVerticalStrut(20));
 
         // crea los botones del menu y los conecta con cada pantalla
         for (String nombre : new String[]{"Inicio", "Libros", "Socios", "Préstamos", "Listados", "Informes"}) {
@@ -150,6 +208,45 @@ public class VentanaPrincipal extends JFrame {
         return marco;
     }
 
+    /**
+     * Pide el nombre de una biblioteca nueva, la crea y la deja seleccionada.
+     */
+    private void nuevaBiblioteca() {
+        String nombre = JOptionPane.showInputDialog(this, "Nombre de la nueva biblioteca:",
+                "Nueva biblioteca", JOptionPane.PLAIN_MESSAGE);
+        if (nombre == null) {
+            return;
+        }
+        nombre = nombre.trim();
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingresá un nombre para la biblioteca.",
+                    "Campo vacío", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        for (int i = 0; i < selector.getItemCount(); i++) {
+            if (selector.getItemAt(i).equalsIgnoreCase(nombre)) {
+                JOptionPane.showMessageDialog(this, "Ya existe una biblioteca con ese nombre.",
+                        "Nombre repetido", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+        try {
+            controlador.crearBiblioteca(nombre);
+            selector.addItem(nombre);
+            selector.setSelectedItem(nombre);
+            refrescarVisible();
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "No se pudo crear la biblioteca: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Crea las imágenes del avatar en distintos tamaños para usarlas como
+     * íconos de la ventana.
+     *
+     * @return la lista de imágenes para los íconos
+     */
     private static java.util.List<Image> iconosDeVentana() {
         java.util.List<Image> iconos = new ArrayList<>();
         for (int lado : new int[]{16, 24, 32, 48, 64}) {
@@ -164,7 +261,14 @@ public class VentanaPrincipal extends JFrame {
         return iconos;
     }
 
-    // crea una etiqueta centrada con la fuente y el color indicados
+    /**
+     * Crea una etiqueta centrada con la fuente y el color indicados.
+     *
+     * @param texto  texto que muestra la etiqueta
+     * @param fuente fuente del texto
+     * @param color  color del texto
+     * @return la etiqueta creada
+     */
     private static JLabel centrado(String texto, Font fuente, Color color) {
         JLabel l = new JLabel(texto);
         l.setFont(fuente);
@@ -173,7 +277,14 @@ public class VentanaPrincipal extends JFrame {
         return l;
     }
 
-    // agrega margen a los costados de un componente para que no toque los bordes del menu
+    /**
+     * Agrega margen a los costados de un componente para que no toque los
+     * bordes del menú.
+     *
+     * @param c    componente al que se le agrega el margen
+     * @param alto alto máximo del panel resultante
+     * @return el panel que contiene al componente con su margen
+     */
     private static JPanel conMargen(JComponent c, int alto) {
         JPanel p = new JPanel(new BorderLayout());
         p.setOpaque(false);

@@ -67,6 +67,8 @@ import java.awt.*;
             } catch (LibroNoPrestadoException ex) {
                 // Cumpliendo consigna: muestra ÚNICAMENTE ex.getMessage() sin alterarlo
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Atención", JOptionPane.WARNING_MESSAGE);
+            } catch (IllegalArgumentException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Libro inexistente", JOptionPane.WARNING_MESSAGE);
             }
         }
     }

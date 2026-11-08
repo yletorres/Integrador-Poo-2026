@@ -9,7 +9,7 @@ import vista.componentes.Listado;
 import vista.componentes.Tarjeta;
 
 import javax.swing.*;
-import java.awt.*;      
+import java.awt.*;
 import java.awt.event.ActionListener;
 
 
@@ -110,6 +110,10 @@ class PanelInformes extends PanelSeccion {
             } catch (LibroNoPrestadoException ex) {
                 estado.mostrar("En biblioteca", Tema.CARAMELO, Tema.TEXTO);
                 resultado.setText(ex.getMessage()); // mensaje del modelo, sin reescribir
+            } catch (IllegalArgumentException ex) {
+                // el título no existe en la biblioteca
+                estado.setVisible(false);
+                resultado.setText(ex.getMessage());
             }
         };
         campo.addActionListener(buscar);
@@ -136,7 +140,7 @@ class PanelInformes extends PanelSeccion {
         return tarjeta("Docentes que nunca adeudaron libros", null, docentes);
     }
 
-    // utilidades 
+    // utilidades
     // arma una tarjeta con titulo, controles opcionales y contenido
     private static Tarjeta tarjeta(String titulo, JComponent controles, JComponent contenido) {
         Tarjeta t = new Tarjeta(Tema.PANEL, 30);

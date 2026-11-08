@@ -5,19 +5,38 @@ import vista.Tema;
 import javax.swing.*;
 import java.awt.*;
 
-// base que comparten las pantallas del menu con el mismo fondo, margenes y encabezado
+/**
+ * Base que comparten las pantallas del menú con el mismo fondo, márgenes y
+ * encabezado.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 abstract class PanelSeccion extends JPanel {
 
+    /**
+     * Crea la sección con el fondo, el diseño y los márgenes comunes a todas
+     * las pantallas.
+     */
     PanelSeccion() {
         setBackground(Tema.FONDO);
         setLayout(new BorderLayout(0, 24));
         setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 34));
     }
 
-    // se ejecuta cuando se muestra la pantalla para actualizar los datos desde el controlador
+    /**
+     * Actualiza los datos de la pantalla desde el controlador. Se ejecuta
+     * cuando se muestra la pantalla.
+     */
     abstract void refrescar();
 
-    // arma el encabezado con el titulo y el texto que aparece debajo
+    /**
+     * Arma el encabezado con el título y el texto que aparece debajo.
+     *
+     * @param titulo etiqueta con el título de la pantalla
+     * @param bajada etiqueta con el texto descriptivo
+     * @return el componente con el encabezado armado
+     */
     static JComponent encabezado(JLabel titulo, JLabel bajada) {
         JPanel p = new JPanel();
         p.setOpaque(false);
@@ -34,12 +53,23 @@ abstract class PanelSeccion extends JPanel {
         return p;
     }
 
-    // permite crear el encabezado directamente a partir de dos textos
+    /**
+     * Crea el encabezado directamente a partir de dos textos.
+     *
+     * @param titulo texto del título de la pantalla
+     * @param bajada texto descriptivo que aparece debajo del título
+     * @return el componente con el encabezado armado
+     */
     static JComponent encabezado(String titulo, String bajada) {
         return encabezado(new JLabel(titulo), new JLabel(bajada));
     }
 
-    // crea el titulo que se usa dentro de cada bloque
+    /**
+     * Crea el título que se usa dentro de cada bloque.
+     *
+     * @param texto texto del subtítulo
+     * @return la etiqueta con el subtítulo
+     */
     static JLabel subtitulo(String texto) {
         JLabel l = new JLabel(texto);
         l.setFont(Tema.sans(Font.BOLD, 16));

@@ -10,14 +10,41 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
-// pantalla de prestamos: formulario para prestar y tabla de libros prestados para devolver
+/**
+ * Pantalla de préstamos: formulario para prestar y tabla de libros prestados
+ * para devolver.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 public class PanelPrestamos extends PanelSeccion {
 
+    /**
+     * Controlador que provee los datos y las operaciones de préstamos.
+     */
     private final BibliotecaController controlador;
+
+    /**
+     * Modelo que administra los datos mostrados en la tabla.
+     */
     private final DefaultTableModel modeloTabla;
+
+    /**
+     * Tabla que muestra los libros en estado de préstamo.
+     */
     private final JTable tabla;
+
+    /**
+     * Botón que devuelve el libro de la fila seleccionada.
+     */
     private final Boton btnDevolver;
 
+    /**
+     * Construye la pantalla con el formulario de préstamo, el panel de
+     * devolución y la tabla de préstamos activos.
+     *
+     * @param controlador controlador que provee los datos de la biblioteca
+     */
     public PanelPrestamos(BibliotecaController controlador) {
         this.controlador = controlador;
 
@@ -51,6 +78,7 @@ public class PanelPrestamos extends PanelSeccion {
         };
 
         tabla = new JTable(modeloTabla);
+        configurarTabla();
         tabla.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // una sola fila a la vez
         tabla.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -59,7 +87,14 @@ public class PanelPrestamos extends PanelSeccion {
         });
 
         JScrollPane scrollTabla = new JScrollPane(tabla);
-        scrollTabla.setBorder(BorderFactory.createTitledBorder(" Libros en Estado de Préstamo / Consulta "));
+        Tema.estilizar(scrollTabla);
+        scrollTabla.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(Tema.LINEA),
+                " Libros en Estado de Préstamo / Consulta ",
+                0, 0,
+                Tema.sans(Font.BOLD, 14),
+                Tema.TEXTO
+        ));
 
         contenedorPrincipal.add(scrollTabla, BorderLayout.CENTER);
 
@@ -67,16 +102,42 @@ public class PanelPrestamos extends PanelSeccion {
         add(contenedorPrincipal, BorderLayout.CENTER);
     }
 
-    // arma el recuadro de devolucion con una indicacion y el boton
+    /**
+     * Configura la apariencia visual de la tabla de préstamos: altura de las
+     * filas, colores, tipografía, selección y cabecera.
+     */
+    private void configurarTabla() {
+        tabla.setRowHeight(40);
+        tabla.setFont(Tema.sans(Font.PLAIN, 14));
+        tabla.setForeground(Tema.TEXTO);
+        tabla.setBackground(Tema.TINTA_TERRACOTA);
+        tabla.setSelectionBackground(Tema.SELECCION);
+        tabla.setSelectionForeground(Tema.TEXTO);
+        tabla.setShowVerticalLines(false);
+        tabla.setGridColor(Tema.LINEA);
+        tabla.setFillsViewportHeight(true);
+
+        tabla.getTableHeader().setFont(Tema.sans(Font.BOLD, 13));
+        tabla.getTableHeader().setBackground(Tema.FONDO);
+        tabla.getTableHeader().setForeground(Tema.TEXTO);
+        tabla.getTableHeader().setReorderingAllowed(false);
+    }
+
+    /**
+     * Arma el recuadro de devolución con una indicación y el botón.
+     *
+     * @param boton botón que registra la devolución
+     * @return el panel con la indicación y el botón
+     */
     private static JPanel crearPanelDevolucion(Boton boton) {
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setOpaque(false);
         panel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(Color.GRAY),
+                BorderFactory.createLineBorder(Tema.LINEA),
                 " Registrar Devolución ",
                 0, 0,
                 Tema.sans(Font.BOLD, 14),
-                Color.WHITE
+                Tema.TEXTO
         ));
 
         GridBagConstraints gbc = new GridBagConstraints();
@@ -86,7 +147,8 @@ public class PanelPrestamos extends PanelSeccion {
         gbc.weightx = 1.0;
 
         JLabel indicacion = new JLabel("Seleccioná un libro de la tabla y presioná el botón.");
-        indicacion.setForeground(Color.WHITE);
+        indicacion.setFont(Tema.sans(Font.PLAIN, 14));
+        indicacion.setForeground(Tema.TEXTO);
         panel.add(indicacion, gbc);
 
         gbc.gridy = 1;
@@ -96,7 +158,10 @@ public class PanelPrestamos extends PanelSeccion {
         return panel;
     }
 
-    // devuelve el libro de la fila seleccionada
+    /**
+     * Devuelve el libro de la fila seleccionada. Si el libro no estaba
+     * prestado, muestra el mensaje de la excepción.
+     */
     private void devolverSeleccionado() {
         int fila = tabla.getSelectedRow();
         if (fila < 0) {
@@ -116,9 +181,16 @@ public class PanelPrestamos extends PanelSeccion {
         } catch (LibroNoPrestadoException ex) {
             // Cumpliendo consigna: muestra ÚNICAMENTE ex.getMessage() sin alterarlo
             JOptionPane.showMessageDialog(this, ex.getMessage(), "Atención", JOptionPane.WARNING_MESSAGE);
+        } catch (IllegalArgumentException ex) {
+            JOptionPane.showMessageDialog(this, ex.getMessage(), "Libro inexistente", JOptionPane.WARNING_MESSAGE);
+            refrescar();
         }
     }
 
+    /**
+     * Actualiza la tabla con los préstamos activos de la biblioteca
+     * seleccionada.
+     */
     @Override
     public void refrescar() {
         modeloTabla.setRowCount(0);

@@ -41,13 +41,6 @@ public class SocioDAOImpl implements SocioDAO {
 
     private static final String SQL_ELIMINAR_SOCIO = "DELETE FROM socio WHERE dniSocio = ?";
 
-    private static final String SQL_BUSCAR_SOCIO = "SELECT s.dniSocio, s.nombre, s.diasPrestamo, s.tipo, " +
-            "d.area, e.carrera " +
-            "FROM socio s " +
-            "LEFT JOIN docente    d ON s.dniSocio = d.dniSocio " +
-            "LEFT JOIN estudiante e ON s.dniSocio = e.dniSocio " +
-            "WHERE s.dniSocio = ?";
-
     private static final String SQL_LISTAR_TODOS = "SELECT s.dniSocio, s.nombre, s.diasPrestamo, s.tipo, " +
             "d.area, e.carrera " +
             "FROM socio s " +
@@ -84,6 +77,7 @@ public class SocioDAOImpl implements SocioDAO {
      */
     public void insertar(Socio p_socio, int p_idBiblioteca) {
         try {
+            this.conexion.setAutoCommit(false);
             // 1. Insertar en la tabla socio
             PreparedStatement psSocio = this.conexion.prepareStatement(SQL_INSERTAR_SOCIO);
             psSocio.setInt(1, p_socio.getDniSocio());
@@ -113,8 +107,19 @@ public class SocioDAOImpl implements SocioDAO {
 
             System.out.println("[SocioDAO] Socio guardado: " + p_socio.getNombre()
                     + " (DNI=" + p_socio.getDniSocio() + ", " + p_socio.soyDeLaClase() + ")");
+            this.conexion.commit();
         } catch (SQLException e) {
             System.err.println("[SocioDAO] Error al guardar: " + e.getMessage());
+            try {
+                this.conexion.rollback();
+            } catch (SQLException ignorada) {
+            }
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                this.conexion.setAutoCommit(true);
+            } catch (SQLException ignorada) {
+            }
         }
     }
 
@@ -152,32 +157,7 @@ public class SocioDAOImpl implements SocioDAO {
         return exito;
     }
 
-    /**
-     * Busca un socio por su DNI y devuelve la instancia concreta
-     * ({@link Docente} o {@link Estudiante}) según el tipo almacenado.
-     *
-     * @param p_dniSocio DNI del socio buscado.
-     * @return Objeto {@link Socio} encontrado, o {@code null} si no existe.
-     * @author (Fernández, Lucía Belén)
-     */
-    public Socio buscarPorDni(int p_dniSocio) {
-        Socio socio = null;
-        try {
-            PreparedStatement ps = this.conexion.prepareStatement(SQL_BUSCAR_SOCIO);
-            ps.setInt(1, p_dniSocio);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                socio = construirSocio(rs);
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException e) {
-            System.err.println("[SocioDAO] Error al buscar: " + e.getMessage());
-        }
-        return socio;
-    }
-
-    /**
+        /**
      * Recupera todos los socios de una biblioteca.
      *
      * @param p_idBiblioteca Identificador de la biblioteca.
@@ -197,6 +177,7 @@ public class SocioDAOImpl implements SocioDAO {
             ps.close();
         } catch (SQLException e) {
             System.err.println("[SocioDAO] Error al listar: " + e.getMessage());
+            throw new RuntimeException(e);
         }
         return socios;
     }

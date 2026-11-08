@@ -23,6 +23,7 @@ public class Libro {
     private int edicion;
     private String editorial;
     private int anio;
+    private int idLibro;
     private ArrayList<Prestamo> prestamos;
 
     /**
@@ -70,6 +71,10 @@ public class Libro {
      * @param p_titulo Título del libro.
      * @author (Fernández, Lucía Belén)
      */
+    public void setIdLibro(int p_idLibro) {
+        this.idLibro = p_idLibro;
+    }
+
     private void setTitulo(String p_titulo) {
         this.titulo = p_titulo;
     }
@@ -127,6 +132,10 @@ public class Libro {
      * @return Título actual.
      * @author (Fernández, Lucía Belén)
      */
+    public int getIdLibro() {
+        return this.idLibro;
+    }
+
     public String getTitulo() {
         return this.titulo;
     }

@@ -1,5 +1,11 @@
 package controlador.dao;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -18,11 +24,11 @@ import java.sql.Statement;
  */
 public class ConexionDB {
 
-    /**
-     * Ruta relativa al archivo SQLite. Se ubica en {@code src/Modelo/}
-     * siguiendo la estructura existente del proyecto.
-     */
-    private static final String URL = "jdbc:sqlite:src/Recursos/biblioteca.db";
+    /** Ruta de la base cuando se ejecuta desde el código fuente. */
+    private static final Path BASE_DESARROLLO = Paths.get("src", "Recursos", "biblioteca.db");
+
+    /** Nombre del recurso empaquetado con la base inicial. */
+    private static final String RECURSO_BASE = "/biblioteca.db";
 
     /** Instancia única de la conexión (Singleton). */
     private static Connection conexion = null;
@@ -42,7 +48,7 @@ public class ConexionDB {
      */
     public static Connection getConexion() throws SQLException {
         if (conexion == null || conexion.isClosed()) {
-            conexion = DriverManager.getConnection(URL);
+            conexion = DriverManager.getConnection("jdbc:sqlite:" + rutaBase());
             // Activar claves foráneas (SQLite las ignora por defecto)
             Statement stmt = conexion.createStatement();
             stmt.execute("PRAGMA foreign_keys = ON");
@@ -50,6 +56,28 @@ public class ConexionDB {
             System.out.println("[ConexionDB] Conexión establecida con biblioteca.db");
         }
         return conexion;
+    }
+
+    private static Path rutaBase() throws SQLException {
+        if (Files.exists(BASE_DESARROLLO)) {
+            return BASE_DESARROLLO.toAbsolutePath();
+        }
+        String datos = System.getenv("APPDATA");
+        Path carpeta = datos != null ? Paths.get(datos, "Biblioteca")
+                : Paths.get(System.getProperty("user.home"), ".biblioteca");
+        Path base = carpeta.resolve("biblioteca.db");
+        if (!Files.exists(base)) {
+            try (InputStream inicial = ConexionDB.class.getResourceAsStream(RECURSO_BASE)) {
+                if (inicial == null) {
+                    throw new SQLException("No se encontró la base de datos inicial");
+                }
+                Files.createDirectories(carpeta);
+                Files.copy(inicial, base, StandardCopyOption.REPLACE_EXISTING);
+            } catch (IOException e) {
+                throw new SQLException("No se pudo crear la base de datos en " + carpeta, e);
+            }
+        }
+        return base;
     }
 
     /**
