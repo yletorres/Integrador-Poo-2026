@@ -13,6 +13,12 @@ import controlador.dao.LibroDAO;
 import controlador.dao.PrestamoDAO;
 import controlador.dao.SocioDAO;
 
+import java.sql.SQLException;
+import controlador.dao.impl.BibliotecaDAOImpl;
+import controlador.dao.impl.LibroDAOImpl;
+import controlador.dao.impl.PrestamoDAOImpl;
+import controlador.dao.impl.SocioDAOImpl;
+
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -48,24 +54,18 @@ public class BibliotecaControllerImpl implements BibliotecaController {
     private int idBibliotecaSeleccionada;
 
     /**
-     * Crea el controlador sin ninguna biblioteca seleccionada.
+     * Crea el controlador armando él mismo los DAOs, una sola vez cada uno,
+     * y compartiéndolos con el DAO de bibliotecas.
      *
      * @author Yleana Torres
-     * @param p_bibliotecaDAO DAO de bibliotecas
-     * @param p_libroDAO      DAO de libros
-     * @param p_socioDAO      DAO de socios
-     * @param p_prestamoDAO   DAO de préstamos
+     * @throws SQLException si ocurre un error al conectar con la base de datos
      */
-    public BibliotecaControllerImpl(
-            BibliotecaDAO p_bibliotecaDAO,
-            LibroDAO p_libroDAO,
-            SocioDAO p_socioDAO,
-            PrestamoDAO p_prestamoDAO) {
-
-        this.setBibliotecaDAO(p_bibliotecaDAO);
-        this.setLibroDAO(p_libroDAO);
-        this.setSocioDAO(p_socioDAO);
-        this.setPrestamoDAO(p_prestamoDAO);
+    public BibliotecaControllerImpl() throws SQLException {
+        this.setLibroDAO(new LibroDAOImpl());
+        this.setSocioDAO(new SocioDAOImpl());
+        this.setPrestamoDAO(new PrestamoDAOImpl());
+        this.setBibliotecaDAO(new BibliotecaDAOImpl(
+                this.getLibroDAO(), this.getSocioDAO(), this.getPrestamoDAO()));
         this.setBibliotecaSeleccionada(null);
         this.setIdBibliotecaSeleccionada(-1);
     }
@@ -224,7 +224,11 @@ public class BibliotecaControllerImpl implements BibliotecaController {
     public List<Object[]> filasLibros() {
         List<Object[]> filas = new ArrayList<>();
 
-        for (Libro libroActual : this.bibliotecaActiva().getLibros()) {
+        if (this.getBibliotecaSeleccionada() == null) {
+            return filas;
+        }
+
+        for (Libro libroActual : this.getBibliotecaSeleccionada().getLibros()) {
             String prestado = libroActual.prestado() ? "Si" : "No";
 
             Object[] fila = {
@@ -258,7 +262,11 @@ public class BibliotecaControllerImpl implements BibliotecaController {
     public List<Object[]> filasSocios() {
         List<Object[]> filas = new ArrayList<>();
 
-        for (Socio socioActual : this.bibliotecaActiva().getSocios()) {
+        if (this.getBibliotecaSeleccionada() == null) {
+            return filas;
+        }
+
+        for (Socio socioActual : this.getBibliotecaSeleccionada().getSocios()) {
             Object[] fila = {
                     socioActual.getDniSocio(),
                     socioActual.getNombre(),

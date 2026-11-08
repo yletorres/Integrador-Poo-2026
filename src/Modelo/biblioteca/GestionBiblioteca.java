@@ -1,11 +1,19 @@
 package biblioteca;
 
 //import com.formdev.flatlaf.FlatDarkLaf;
+import controlador.BibliotecaController;
+import controlador.BibliotecaControllerImpl;
+import controlador.dao.BibliotecaDAO;
+import controlador.dao.impl.BibliotecaDAOImpl;
+import controlador.dao.impl.LibroDAOImpl;
+import controlador.dao.impl.PrestamoDAOImpl;
+import controlador.dao.impl.SocioDAOImpl;
 import vista.Tema;
 import vista.VentanaInicial;
 import vista.paneles.VentanaPrincipal;
 
 import javax.swing.*;
+import java.sql.SQLException;
 
 public class GestionBiblioteca {
 
@@ -26,10 +34,15 @@ public class GestionBiblioteca {
 
     // abre la ventana principal de la biblioteca
     private static void iniciarSistema() {
-        // BibliotecaController controlador = new BibliotecaControllerImpl(); //aplicar
-        // cuando lo tengamos
-
-        // new VentanaPrincipal(controlador).setVisible(true);
+        try {
+            BibliotecaController controlador = new BibliotecaControllerImpl();
+            new VentanaPrincipal(controlador).setVisible(true);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                    "No se pudo conectar con la base de datos: " + e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     // ejecuta la demostracion del practico

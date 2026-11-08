@@ -11,6 +11,7 @@ import biblioteca.socio.Docente;
 import biblioteca.socio.Estudiante;
 import biblioteca.socio.Socio;
 import controlador.dao.SocioDAO;
+import controlador.dao.ConexionDB;
 
 /**
  * Data Access Object para la jerarquía {@link Socio} / {@link Docente} /

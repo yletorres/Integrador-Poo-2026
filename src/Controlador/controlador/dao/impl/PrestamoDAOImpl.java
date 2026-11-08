@@ -17,6 +17,7 @@ import biblioteca.socio.Socio;
 import controlador.dao.LibroDAO;
 import controlador.dao.PrestamoDAO;
 import controlador.dao.SocioDAO;
+import controlador.dao.ConexionDB;
 
 /**
  * Data Access Object para la entidad {@link Prestamo}.

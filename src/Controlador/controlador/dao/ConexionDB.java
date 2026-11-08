@@ -1,3 +1,4 @@
+package controlador.dao;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -21,7 +22,7 @@ public class ConexionDB {
      * Ruta relativa al archivo SQLite. Se ubica en {@code src/Modelo/}
      * siguiendo la estructura existente del proyecto.
      */
-    private static final String URL = "jdbc:sqlite:src/Modelo/biblioteca.db";
+    private static final String URL = "jdbc:sqlite:src/Recursos/biblioteca.db";
 
     /** Instancia única de la conexión (Singleton). */
     private static Connection conexion = null;
