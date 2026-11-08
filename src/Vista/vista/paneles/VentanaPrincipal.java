@@ -47,8 +47,7 @@ public class VentanaPrincipal extends JFrame {
                 new String[]{"Título", "Edición", "Editorial", "Año", "Prestado"}, 0, controlador::filasLibros));
         agregar("Socios", new PanelTabla("Socios", "Docentes y estudiantes registrados",
                 new String[]{"D.N.I.", "Nombre", "Tipo", "Libros prestados"}, 1, controlador::filasSocios));
-        agregar("Préstamos", new PanelPendiente("Préstamos", "Retiros y devoluciones",
-                "Acá vas a poder registrar un préstamo y una devolución."));
+        agregar("Préstamos", new PanelPrestamos(controlador));
         agregar("Listados", new PanelListados(controlador));
         agregar("Informes", new PanelInformes(controlador));
 
