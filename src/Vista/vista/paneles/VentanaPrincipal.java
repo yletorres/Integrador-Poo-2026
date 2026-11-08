@@ -43,11 +43,18 @@ public class VentanaPrincipal extends JFrame {
         add(contenido, BorderLayout.CENTER);
 
         agregar("Inicio", new PanelInicio(controlador, this::nombreDeBiblioteca));
+<<<<<<< HEAD
         agregar("Libros", new PanelTabla("Libros", "Todos los ejemplares del catálogo",
                 new String[]{"Título", "Edición", "Editorial", "Año", "Prestado"}, 0, controlador::filasLibros));
         agregar("Socios", new PanelTabla("Socios", "Docentes y estudiantes registrados",
                 new String[]{"D.N.I.", "Nombre", "Tipo", "Libros prestados"}, 1, controlador::filasSocios));
         agregar("Préstamos", new PanelPrestamos(controlador));
+=======
+        agregar("Libros", new PanelLibros(controlador));
+        agregar("Socios", new PanelSocios(controlador));
+        agregar("Préstamos", new PanelPendiente("Préstamos", "Retiros y devoluciones",
+                "Acá vas a poder registrar un préstamo y una devolución."));
+>>>>>>> feature/iara-menu-libros-socios
         agregar("Listados", new PanelListados(controlador));
         agregar("Informes", new PanelInformes(controlador));
 
