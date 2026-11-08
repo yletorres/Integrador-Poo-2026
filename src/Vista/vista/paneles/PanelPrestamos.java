@@ -52,7 +52,7 @@ public class PanelPrestamos extends PanelSeccion {
         // Agregar todo al contenido de PanelSeccion
         add(contenedorPrincipal, BorderLayout.CENTER);
     }
-    
+
     @Override
     public void refrescar() {
         modeloTabla.setRowCount(0);
@@ -75,3 +75,4 @@ public class PanelPrestamos extends PanelSeccion {
             modeloTabla.setRowCount(0);
         }
     }
+}
