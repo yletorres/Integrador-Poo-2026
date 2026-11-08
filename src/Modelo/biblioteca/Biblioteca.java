@@ -456,7 +456,7 @@ public class Biblioteca {
 
 
         for(Socio soc :this.getSocios()){
-            lista += item +") " +soc.toString()+"\n";
+            lista += item +") " +soc.toString()+" || Libros Prestados: " +soc.cantLibrosPrestados() +"\n";
           item++;
         }
 
