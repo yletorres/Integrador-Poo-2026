@@ -4,6 +4,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import Recursos.ConexionDB;
+import biblioteca.libro.Libro;
+import biblioteca.prestamo.Prestamo;
+import biblioteca.socio.Docente;
+import biblioteca.socio.Estudiante;
+import biblioteca.socio.Socio;
+import controlador.dao.LibroDAO;
+import controlador.dao.PrestamoDAO;
+import controlador.dao.SocioDAO;
+
 /**
  * Clase principal que integra la capa de persistencia (SQLite + DAOs)
  * con el modelo de dominio de la biblioteca.
@@ -114,7 +124,7 @@ public class GestionBiblioteca {
 
             // Agregar el préstamo al libro y al socio (lógica de negocio)
             nuevoLibro.agregarPrestamo(nuevoPrestamo);
-            nuevoEstudiante.addPrestamo(nuevoPrestamo);
+            nuevoEstudiante.agregarPrestamo(nuevoPrestamo);
 
             // Persistir en la BD
             int idPrestamo = prestamoDAO.guardar(nuevoPrestamo, idNuevoLibro);
