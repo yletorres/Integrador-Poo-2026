@@ -7,13 +7,30 @@ import vista.componentes.Boton;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Formulario para el registro de préstamos de libros dentro del sistema de biblioteca.
+ * Permite ingresar el DNI del socio y el título del libro a prestar, validando
+ * los campos e invocando la lógica de negocio a través del controlador.
+ *
+ * @author Josefina Vallejos Romero
+ */
     public class FormularioPrestamo extends JPanel {
 
+    /** Controlador de la biblioteca utilizado para ejecutar la lógica de negocio. */
         private final BibliotecaController controlador;
+    /** Campo de texto para ingresar el DNI del socio. */
         private final JTextField txtDni;
+    /** Campo de texto para ingresar el título del libro a prestar. */
         private final JTextField txtTitulo;
+    /** Acción callback a ejecutar tras registrar exitosamente un préstamo. */
         private final Runnable alRegistrarSuccess;
 
+    /**
+     * Construye e inicializa la interfaz visual del formulario de registro de préstamos.
+     *
+     * @param controlador instancia del controlador de la biblioteca
+     * @param alRegistrarSuccess acción o callback que se ejecuta cuando el préstamo se registra con éxito
+     */
         public FormularioPrestamo(BibliotecaController controlador, Runnable alRegistrarSuccess) {
             this.controlador = controlador;
             this.alRegistrarSuccess = alRegistrarSuccess;
@@ -60,6 +77,11 @@ import java.awt.*;
             add(btnPrestar, gbc);
         }
 
+    /**
+     * Valida los datos ingresados en los campos de texto e intenta registrar
+     * el préstamo invocando al controlador. Maneja excepciones de formato numérico
+     * y de tiempo de ejecución mostrando mensajes informativos al usuario.
+     */
         private void registrarPrestamo() {
             String dniTexto = txtDni.getText().trim();
             String titulo = txtTitulo.getText().trim();
