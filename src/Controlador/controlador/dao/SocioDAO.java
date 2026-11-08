@@ -29,14 +29,6 @@ public interface SocioDAO {
     void insertar(Socio p_socio, int p_idBiblioteca);
 
     /**
-     * Busca un socio por su DNI.
-     *
-     * @param p_dniSocio DNI del socio buscado
-     * @return el socio (docente o estudiante), o null si no existe
-     */
-    Socio buscarPorDni(int p_dniSocio);
-
-    /**
      * Elimina un socio de la base de datos.
      *
      * @param p_dniSocio DNI del socio que se elimina

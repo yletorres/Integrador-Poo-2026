@@ -3,13 +3,41 @@ package controlador.dao;
 import biblioteca.Biblioteca;
 import java.util.List;
 
+/**
+ * Define las operaciones de acceso a datos para la gestión de bibliotecas.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 public interface BibliotecaDAO {
 
+        /**
+         * Devuelve los nombres de todas las bibliotecas registradas.
+         *
+         * @return lista con los nombres de las bibliotecas
+         */
         List<String> obtenerNombres();
 
-        Biblioteca buscarPorNombre(String nombre);
+        /**
+         * Busca una biblioteca a partir de su nombre.
+         *
+         * @param p_nombre nombre de la biblioteca que se desea buscar
+         * @return biblioteca encontrada, o null si no existe
+         */
+        Biblioteca buscarPorNombre(String p_nombre);
 
-        int obtenerIdPorNombre(String nombre);
+        /**
+         * Devuelve el identificador de una biblioteca a partir de su nombre.
+         *
+         * @param p_nombre nombre de la biblioteca
+         * @return identificador de la biblioteca
+         */
+        int obtenerIdPorNombre(String p_nombre);
 
-        void insertar(Biblioteca biblioteca);
+        /**
+         * Registra una nueva biblioteca.
+         *
+         * @param p_biblioteca biblioteca que se desea insertar
+         */
+        void insertar(Biblioteca p_biblioteca);
 }
