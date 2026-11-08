@@ -22,7 +22,7 @@ import java.util.List;
  * (BibliotecaController): trabaja sobre el modelo y persiste cada cambio a
  * través de las interfaces DAO.
  * Contrato con el DAO: BibliotecaDAO.buscarPorNombre devuelve la biblioteca
- * ya armada desde la base de datos, con sus libros, socios y préstamos.
+ * ya armada desde la base de datos, con sus libros, socios y préstamos
  *
  * @author Yleana Torres
  * @version TP7 - 2026

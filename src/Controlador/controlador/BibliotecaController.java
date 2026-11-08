@@ -10,7 +10,7 @@ import java.util.List;
  * Las tablas se entregan como filas (Object[]) para que la vista no dependa
  * de cómo está implementado el modelo.
  *
- * Cambiar una firma requiere avisar al equipo.
+ * Cambiar una firma requiere avisar al equipo
  */
 public interface BibliotecaController { /* define métodos que otras clases están obligadas a implementar */
 
