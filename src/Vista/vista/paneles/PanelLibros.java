@@ -11,12 +11,33 @@ import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.*;
 import java.util.List;
 
+/**
+ * Panel encargado de mostrar y gestionar los libros de una biblioteca.
+ * Permite registrar nuevos libros, eliminarlos y visualizar sus datos
+ * mediante una tabla.
+ *
+ * La comunicación con la lógica del sistema se realiza a través de
+ * la interfaz BibliotecaController.
+ *
+ * @author Azula Iara
+ * @version TP7 - 2026
+ */
 public class PanelLibros extends PanelSeccion {
 
+    /** Controlador que permite realizar las operaciones sobre los libros. */
     private final BibliotecaController controlador;
+    /** Modelo que administra los datos mostrados en la tabla. */
     private final DefaultTableModel modelo;
+    /** Tabla que presenta los libros de la biblioteca seleccionada. */
     private final JTable tabla;
 
+    /**
+     * Construye el panel de libros, configura la tabla y agrega los botones
+     * para registrar y eliminar libros.
+     *
+     * @param controlador controlador encargado de gestionar las operaciones
+     *                    relacionadas con los libros
+     */
     public PanelLibros(BibliotecaController controlador) {
         this.controlador = controlador;
 
@@ -40,17 +61,14 @@ public class PanelLibros extends PanelSeccion {
         tarjeta.add(scroll, BorderLayout.CENTER);
 
         JButton btnNuevo = crearBoton(" + Nuevo libro ");
-        JButton btnModificar = crearBoton("Modificar");
         JButton btnEliminar = crearBoton("Eliminar");
 
         btnNuevo.addActionListener(e -> nuevoLibro());
-        btnModificar.addActionListener(e -> modificarLibro());
         btnEliminar.addActionListener(e -> eliminarLibro());
 
         JPanel acciones = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         acciones.setOpaque(false);
         acciones.add(btnNuevo);
-        acciones.add(btnModificar);
         acciones.add(btnEliminar);
 
         JPanel contenido = new JPanel(new BorderLayout(0, 15));
@@ -63,6 +81,12 @@ public class PanelLibros extends PanelSeccion {
         refrescar();
     }
 
+    /**
+     * Crea y configura un botón para las acciones del panel.
+     *
+     * @param texto texto que se mostrará en el botón
+     * @return botón configurado
+     */
     private JButton crearBoton(String texto) {
         JButton boton = new JButton(texto);
         boton.setFont(Tema.sans(Font.BOLD, 14));
@@ -71,6 +95,13 @@ public class PanelLibros extends PanelSeccion {
         return boton;
     }
 
+    /**
+     * Configura la apariencia de la tabla de libros.
+     *
+     * Establece la altura de las filas, los colores, el renderizado
+     * de las celdas y oculta la columna del identificador sin eliminarla
+     * del modelo de datos.
+     */
     private void configurarTabla() {
         tabla.setRowHeight(46);
         tabla.setShowGrid(false);
@@ -109,6 +140,15 @@ public class PanelLibros extends PanelSeccion {
         tabla.getColumnModel().getColumn(0).setPreferredWidth(360);
     }
 
+    /**
+     * Solicita los datos necesarios para registrar un libro nuevo.
+     *
+     * Valida que los campos estén completos, que la edición y el año
+     * sean valores numéricos positivos y comunica el resultado al usuario.
+     *
+     * Si los datos son válidos, solicita al controlador que registre el libro
+     * y actualiza la tabla.
+     */
     private void nuevoLibro() {
         JTextField titulo = new JTextField();
         JTextField edicion = new JTextField();
@@ -153,63 +193,13 @@ public class PanelLibros extends PanelSeccion {
         }
     }
 
-    private void modificarLibro() {
-        int fila = tabla.getSelectedRow();
-
-        if (fila == -1) {
-            JOptionPane.showMessageDialog(this,"Seleccioná el libro que deseas modificar.");
-            return;
-        }
-
-        int filaModelo = tabla.convertRowIndexToModel(fila);
-        int idLibro = ((Number) modelo.getValueAt(filaModelo, 0)).intValue();
-
-        JTextField titulo = new JTextField(modelo.getValueAt(filaModelo, 1).toString());
-
-        JTextField edicion = new JTextField(modelo.getValueAt(filaModelo, 2).toString());
-
-        JTextField editorial = new JTextField(modelo.getValueAt(filaModelo, 3).toString());
-
-        JTextField anio = new JTextField(modelo.getValueAt(filaModelo, 4).toString());
-
-        Object[] campos = {"Título:", titulo, "Edición:", edicion, "Editorial:", editorial, "Año:", anio};
-
-        int opcion = JOptionPane.showConfirmDialog(this, campos,"Modificar libro", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
-
-        if (opcion != JOptionPane.OK_OPTION) {
-            return;
-        }
-
-        try {
-            String nombre = titulo.getText().trim();
-            String nombreEditorial = editorial.getText().trim();
-
-            if (nombre.isEmpty() || edicion.getText().trim().isEmpty() || nombreEditorial.isEmpty() || anio.getText().trim().isEmpty()) {
-                JOptionPane.showMessageDialog(this,"Completá todos los campos.");
-                return;
-            }
-
-            int numeroEdicion = Integer.parseInt(edicion.getText().trim());
-            int numeroAnio = Integer.parseInt(anio.getText().trim());
-
-            if (numeroEdicion <= 0 || numeroAnio <= 0) {
-                JOptionPane.showMessageDialog(this,"La edición y el año deben ser mayores que cero.");
-                return;
-            }
-
-            controlador.modificarLibro(idLibro, nombre, numeroEdicion, nombreEditorial, numeroAnio);
-
-            refrescar();
-
-            JOptionPane.showMessageDialog(this,"Libro modificado correctamente.");
-
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this,"La edición y el año deben ser valores numéricos.");
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this,"No se pudo modificar el libro: " + ex.getMessage());
-        }
-    }
-
+    /**
+     * Elimina el libro seleccionado de la biblioteca.
+     *
+     * Verifica que exista una fila seleccionada, solicita confirmación
+     * al usuario y comunica la operación al controlador.
+     * Finalmente, actualiza la tabla.
+     */
     private void eliminarLibro() {
         int fila = tabla.getSelectedRow();
 
@@ -242,6 +232,13 @@ public class PanelLibros extends PanelSeccion {
         }
     }
 
+    /**
+     * Actualiza el contenido de la tabla con los libros de la biblioteca
+     * seleccionada.
+     *
+     * Primero elimina las filas existentes y luego incorpora las filas
+     * devueltas por el controlador.
+     */
     @Override
     void refrescar() {
         modelo.setRowCount(0);
