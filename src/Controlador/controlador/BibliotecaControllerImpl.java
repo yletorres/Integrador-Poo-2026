@@ -20,6 +20,7 @@ import controlador.dao.impl.PrestamoDAOImpl;
 import controlador.dao.impl.SocioDAOImpl;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -382,8 +383,6 @@ public class BibliotecaControllerImpl implements BibliotecaController {
 
     @Override
     public void devolverLibro(String p_titulo) throws LibroNoPrestadoException {
-        Biblioteca biblioteca = this.bibliotecaActiva();
-
         Libro libro = this.buscarLibroParaConsulta(p_titulo);
 
         if (libro == null) {
@@ -391,20 +390,74 @@ public class BibliotecaControllerImpl implements BibliotecaController {
                     + " no se puede devolver ya que se encuentra en la biblioteca");
         }
 
-        // Lanza LibroNoPrestadoException si ningún ejemplar de ese título está prestado.
-        biblioteca.devolverLibro(libro);
+        this.devolverEjemplar(libro);
+    }
 
-        Prestamo prestamo = libro.ultimoPrestamo();
+    @Override
+    public void devolverLibro(String p_titulo, int p_dni) throws LibroNoPrestadoException {
+        Libro libro = null;
+
+        // Entre los ejemplares prestados del título, busca el que tiene ese socio.
+        for (Libro libroActual : this.bibliotecaActiva().getLibros()) {
+            if (libroActual.getTitulo().equals(p_titulo) && libroActual.prestado()
+                    && libroActual.ultimoPrestamo().getSocio().getDniSocio() == p_dni) {
+                libro = libroActual;
+                break;
+            }
+        }
+
+        if (libro == null) {
+            throw new LibroNoPrestadoException("El libro " + p_titulo
+                    + " no se puede devolver ya que se encuentra en la biblioteca");
+        }
+
+        this.devolverEjemplar(libro);
+    }
+
+    /**
+     * Devuelve un ejemplar en el modelo y guarda la devolución en la base de datos.
+     *
+     * @param p_libro ejemplar que se devuelve
+     * @throws LibroNoPrestadoException si el ejemplar no está prestado
+     */
+    private void devolverEjemplar(Libro p_libro) throws LibroNoPrestadoException {
+        // Lanza LibroNoPrestadoException si el ejemplar no está prestado.
+        this.bibliotecaActiva().devolverLibro(p_libro);
+
+        Prestamo prestamo = p_libro.ultimoPrestamo();
         try {
-            this.getPrestamoDAO().registrarDevolucion(
-                    p_titulo,
-                    this.getIdBibliotecaSeleccionada(),
-                    prestamo.getFechaDevolucion());
+            // se guarda por el mismo préstamo que modificó el modelo, no por título
+            this.getPrestamoDAO().registrarDevolucion(prestamo, prestamo.getFechaDevolucion());
         } catch (RuntimeException excepcion) {
             // Si no se pudo guardar, el libro vuelve a figurar como prestado.
             prestamo.registrarFechaDevolucion(null);
             throw excepcion;
         }
+    }
+
+    @Override
+    public List<Object[]> filasPrestamosActivos() {
+        List<Object[]> filas = new ArrayList<>();
+
+        if (this.getBibliotecaSeleccionada() == null) {
+            return filas;
+        }
+
+        Calendar hoy = new GregorianCalendar();
+        for (Libro libroActual : this.getBibliotecaSeleccionada().getLibros()) {
+            if (libroActual.prestado()) {
+                Prestamo prestamo = libroActual.ultimoPrestamo();
+                Object[] fila = {
+                        libroActual.getTitulo(),
+                        prestamo.getSocio().getDniSocio(),
+                        prestamo.getSocio().getNombre(),
+                        prestamo.vencido(hoy) ? "Vencido" : "Prestado"
+                };
+                filas.add(fila);
+            }
+        }
+
+        return filas;
     }
 
     // >>> informes de la consigna <<<

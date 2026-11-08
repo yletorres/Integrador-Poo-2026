@@ -112,6 +112,24 @@ public interface BibliotecaController { /* define métodos que otras clases est�
      */
     public abstract void devolverLibro(String p_titulo) throws LibroNoPrestadoException;
 
+    /**
+     * Registra la devolución del ejemplar de un título que tiene un socio determinado,
+     * con la fecha de hoy. Sirve cuando hay varios ejemplares prestados del mismo título.
+     *
+     * @param p_titulo título del libro que se devuelve
+     * @param p_dni    DNI del socio que lo devuelve
+     * @throws LibroNoPrestadoException si ese socio no tiene en préstamo un ejemplar de ese título
+     */
+    public abstract void devolverLibro(String p_titulo, int p_dni) throws LibroNoPrestadoException;
+
+    /**
+     * Arma las filas de los libros que están prestados, con quién los tiene.
+     * Columnas: título, DNI del socio, nombre del socio y estado ("Prestado" o "Vencido").
+     *
+     * @return una fila por cada ejemplar prestado de la biblioteca seleccionada
+     */
+    public abstract List<Object[]> filasPrestamosActivos();
+
     // >>> informes de la consigna <<<
 
     /**
@@ -160,21 +178,21 @@ public interface BibliotecaController { /* define métodos que otras clases est�
      */
     public abstract String listaDeDocentesResponsables();
 
-/**
- * Devuelve las filas de libros con el id como primera columna.
- * Columnas: id, título, edición, editorial, año y prestado ("Si" o "No").
- *
- * @return una fila por cada libro
- */
-public abstract List<Object[]> filasLibrosConId();
+    /**
+     * Devuelve las filas de libros con el id como primera columna.
+     * Columnas: id, título, edición, editorial, año y prestado ("Si" o "No").
+     *
+     * @return una fila por cada libro
+     */
+    public abstract List<Object[]> filasLibrosConId();
 
-/**
- * Elimina un libro de la biblioteca seleccionada.
- *
- * @param p_idLibro id del libro a eliminar
- * @throws IllegalArgumentException si no existe un libro con ese id
- * @throws IllegalStateException    si el libro está prestado
- */
-public abstract void eliminarLibro(int p_idLibro);
+    /**
+     * Elimina un libro de la biblioteca seleccionada.
+     *
+     * @param p_idLibro id del libro a eliminar
+     * @throws IllegalArgumentException si no existe un libro con ese id
+     * @throws IllegalStateException    si el libro está prestado
+     */
+    public abstract void eliminarLibro(int p_idLibro);
 
 }

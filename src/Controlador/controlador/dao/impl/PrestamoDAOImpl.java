@@ -9,7 +9,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 
 import biblioteca.libro.Libro;
 import biblioteca.prestamo.Prestamo;
@@ -66,6 +68,14 @@ public class PrestamoDAOImpl implements PrestamoDAO {
     /** Conexión JDBC reutilizada en cada operación. */
     private Connection conexion;
 
+    /**
+     * Relaciona cada {@link Prestamo} del modelo con su idPrestamo en la base de datos.
+     * Usa IdentityHashMap para comparar por referencia (el mismo objeto Java) y no por
+     * equals(), porque el modelo no guarda el id. Se completa al cargar los préstamos
+     * y al insertar uno nuevo, y se usa para registrar la devolución del préstamo correcto.
+     */
+    private final Map<Prestamo, Integer> idsPorPrestamo = new IdentityHashMap<>();
+
     /** Formato de fecha compatible con el esquema SQLite ('AAAA-MM-DD'). */
     private static final SimpleDateFormat FORMATO_FECHA = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -91,6 +101,8 @@ public class PrestamoDAOImpl implements PrestamoDAO {
      */
     @Override
     public void cargarPrestamos(List<Libro> libros, List<Socio> socios, int idBiblioteca) {
+        // los objetos de una carga anterior ya no se usan
+        this.idsPorPrestamo.clear();
         try {
             PreparedStatement ps = this.conexion.prepareStatement(SQL_LISTAR_TODOS);
             ps.setInt(1, idBiblioteca);
@@ -128,6 +140,8 @@ public class PrestamoDAOImpl implements PrestamoDAO {
                     if (strDevolucion != null) {
                         prestamo.registrarFechaDevolucion(parsearFecha(strDevolucion));
                     }
+                    // guarda el id de la base para poder devolver este mismo préstamo
+                    this.idsPorPrestamo.put(prestamo, rs.getInt("idPrestamo"));
                     libroEncontrado.agregarPrestamo(prestamo);
                     socioEncontrado.agregarPrestamo(prestamo);
                 }
@@ -163,6 +177,14 @@ public class PrestamoDAOImpl implements PrestamoDAO {
             ps.setInt(5, p_idBiblioteca);
             ps.executeUpdate();
             ps.close();
+
+            // guarda el id que le asignó la base para poder devolverlo después
+            try (Statement st = this.conexion.createStatement();
+                 ResultSet rs = st.executeQuery("SELECT last_insert_rowid()")) {
+                if (rs.next()) {
+                    this.idsPorPrestamo.put(p_prestamo, rs.getInt(1));
+                }
+            }
             System.out.println("[PrestamoDAO] Préstamo guardado (libro=" + p_prestamo.getLibro().getTitulo()
                     + ", socio=" + p_prestamo.getSocio().getDniSocio() + ")");
         } catch (SQLException e) {
@@ -172,24 +194,25 @@ public class PrestamoDAOImpl implements PrestamoDAO {
     }
 
     /**
-     * Registra la fecha de devolución del préstamo activo de un libro por su título.
+     * Registra la fecha de devolución de un préstamo, identificándolo por su id en la base.
      *
-     * @param p_titulo          Título del libro devuelto.
-     * @param p_idBiblioteca    Identificador de la biblioteca.
+     * @param p_prestamo        Préstamo del modelo que se devolvió.
      * @param p_fechaDevolucion Fecha de devolución.
+     * @throws IllegalStateException si el préstamo no fue cargado ni insertado desde la base.
      */
     @Override
-    public void registrarDevolucion(String p_titulo, int p_idBiblioteca, Calendar p_fechaDevolucion) {
+    public void registrarDevolucion(Prestamo p_prestamo, Calendar p_fechaDevolucion) {
+        Integer id = this.idsPorPrestamo.get(p_prestamo);
+        if (id == null) {
+            throw new IllegalStateException("El préstamo no está guardado en la base de datos");
+        }
         try {
-            PreparedStatement ps = this.conexion.prepareStatement(SQL_REGISTRAR_DEVOLUCION_TITULO);
+            PreparedStatement ps = this.conexion.prepareStatement(SQL_REGISTRAR_DEVOLUCION_ID);
             ps.setString(1, FORMATO_FECHA.format(p_fechaDevolucion.getTime()));
-            ps.setString(2, p_titulo);
-            ps.setInt(3, p_idBiblioteca);
-            int filas = ps.executeUpdate();
+            ps.setInt(2, id);
+            ps.executeUpdate();
             ps.close();
-            if (filas > 0) {
-                System.out.println("[PrestamoDAO] Devolución registrada (título=" + p_titulo + ")");
-            }
+            System.out.println("[PrestamoDAO] Devolución registrada (idPrestamo=" + id + ")");
         } catch (SQLException e) {
             System.err.println("[PrestamoDAO] Error al registrar devolución: " + e.getMessage());
             throw new RuntimeException(e);
@@ -379,7 +402,7 @@ public class PrestamoDAOImpl implements PrestamoDAO {
     // ====================== AUXILIARES =======================
 
     private ArrayList<Prestamo> listarConQuery(String sql, int parametro,
-            LibroDAO p_libroDAO, SocioDAO p_socioDAO) {
+                                               LibroDAO p_libroDAO, SocioDAO p_socioDAO) {
         ArrayList<Prestamo> prestamos = new ArrayList<Prestamo>();
         try {
             PreparedStatement ps = this.conexion.prepareStatement(sql);
