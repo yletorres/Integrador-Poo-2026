@@ -14,7 +14,7 @@ import java.awt.*;
  * Pantalla de préstamos: formulario para prestar y tabla de libros prestados
  * para devolver.
  *
- * @author Yleana Torres
+ * @author Yleana Torres y Josefina Vallejos Romero
  * @version TP7 - 2026
  */
 public class PanelPrestamos extends PanelSeccion {

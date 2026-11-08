@@ -7,12 +7,27 @@ import vista.componentes.Boton;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Formulario para el registro de devoluciones de libros dentro del sistema de biblioteca.
+ * Captura el título del libro a devolver, procesa la transacción mediante el controlador
+ * y gestiona la excepción {@link LibroNoPrestadoException} mostrando únicamente su mensaje.
+ *
+ * @author Josefina Vallejos Romero
+ */
     public class FormularioDevolucion extends JPanel {
 
+    /** Controlador de la biblioteca utilizado para gestionar las devoluciones. */
         private final BibliotecaController controlador;
+    /** Campo de texto para ingresar el título del libro a devolver. */
         private final JTextField txtTitulo;
+    /** Acción callback que se ejecuta tras registrar exitosamente una devolución. */
         private final Runnable alDevolverSuccess;
 
+    /**
+     * Construye e inicializa la interfaz visual del formulario de devolución de libros
+     * @param controlador  instancia del controlador de la biblioteca
+     * @param alDevolverSuccess acción o callback que se ejecuta cuando la devolución finaliza con éxito
+     */
         public FormularioDevolucion(BibliotecaController controlador, Runnable alDevolverSuccess) {
             this.controlador = controlador;
             this.alDevolverSuccess = alDevolverSuccess;
@@ -49,6 +64,11 @@ import java.awt.*;
             add(btnDevolver, gbc);
         }
 
+    /**
+     * Valida el campo del título e invoca la devolución en el controlador.
+     * Captura la excepción {@link LibroNoPrestadoException} y muestra únicamente
+     * su mensaje original ({@code ex.getMessage()}) en un cuadro de diálogo.
+     */
         private void registrarDevolucion() {
             String titulo = txtTitulo.getText().trim();
 
