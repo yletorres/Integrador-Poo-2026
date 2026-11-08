@@ -1,10 +1,11 @@
 package vista;
 
+import javax.swing.*;
+
 import vista.componentes.Avatar;
 import vista.componentes.Boton;
 import vista.componentes.Icono;
 
-import javax.swing.*;
 import java.awt.*;
 
 /**

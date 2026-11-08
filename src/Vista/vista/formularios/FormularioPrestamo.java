@@ -88,6 +88,8 @@ import java.awt.*;
                 }
             } catch (NumberFormatException ex) {
                 JOptionPane.showMessageDialog(this, "El DNI debe ser un número entero válido.", "DNI inválido", JOptionPane.ERROR_MESSAGE);
+            } catch (RuntimeException ex) {
+                JOptionPane.showMessageDialog(this, "No se pudo registrar el préstamo: " + ex.getMessage(), "Error al prestar", JOptionPane.ERROR_MESSAGE);
             }
         }
     }

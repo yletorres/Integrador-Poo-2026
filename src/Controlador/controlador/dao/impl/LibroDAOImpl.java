@@ -17,19 +17,12 @@ public class LibroDAOImpl implements LibroDAO {
 
     private static final String SQL_INSERTAR = "INSERT INTO libro (titulo, edicion, editorial, anio, idBiblioteca) VALUES (?, ?, ?, ?, ?)";
 
-    private static final String SQL_MODIFICAR = "UPDATE libro SET titulo = ?, edicion = ?, editorial = ?, anio = ? WHERE idLibro = ?";
-
     private static final String SQL_ELIMINAR = "DELETE FROM libro WHERE idLibro = ?";
-
-    private static final String SQL_BUSCAR_POR_ID = "SELECT idLibro, titulo, edicion, editorial, anio FROM libro WHERE idLibro = ?";
 
     private static final String SQL_LISTAR_TODOS = "SELECT l.idLibro, l.titulo, l.edicion, l.editorial, l.anio, " +
                     "CASE WHEN EXISTS (" + "SELECT 1 FROM prestamo p " +  "WHERE p.idLibro = l.idLibro AND p.fechaDevolucion IS NULL" +") " +
                     "THEN 'Si' ELSE 'No' END AS prestado " + "FROM libro l WHERE l.idBiblioteca = ?";
 
-    private static final String SQL_LISTAR_CON_ESTADO = "SELECT l.idLibro, l.titulo, l.edicion, l.editorial, l.anio, " +
-                    "CASE WHEN EXISTS (" + "SELECT 1 FROM prestamo p " + "WHERE p.idLibro = l.idLibro AND p.fechaDevolucion IS NULL" +
-                    ") THEN 'Si' ELSE 'No' END AS prestado " + "FROM libro l WHERE l.idBiblioteca = ?";
     // ====================== ATRIBUTOS ======================
 
     /** Conexión JDBC reutilizada en cada operación. */
@@ -74,41 +67,15 @@ public class LibroDAOImpl implements LibroDAO {
             }
             rs.close();
             ps.close();
+            p_libro.setIdLibro(idGenerado);
             System.out.println("[LibroDAO] Libro guardado: " + p_libro.getTitulo() + " (id=" + idGenerado + ")");
         } catch (SQLException e) {
             System.err.println("[LibroDAO] Error al guardar: " + e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 
-    /**
-     * Actualiza los datos de un libro existente.
-     *
-     * @param p_idLibro Identificador del libro en la base de datos.
-     * @param p_libro   Objeto {@link Libro} con los nuevos valores.
-     * @return {@code true} si se modificó al menos una fila.
-     * @author (Fernández, Lucía Belén)
-     */
-    public boolean modificar(int p_idLibro, Libro p_libro) {
-        boolean exito = false;
-        try {
-            PreparedStatement ps = this.conexion.prepareStatement(SQL_MODIFICAR);
-            ps.setString(1, p_libro.getTitulo());
-            ps.setInt(2, p_libro.getEdicion());
-            ps.setString(3, p_libro.getEditorial());
-            ps.setInt(4, p_libro.getAnio());
-            ps.setInt(5, p_idLibro);
-            exito = ps.executeUpdate() > 0;
-            ps.close();
-            if (exito) {
-                System.out.println("[LibroDAO] Libro modificado (id=" + p_idLibro + ")");
-            }
-        } catch (SQLException e) {
-            System.err.println("[LibroDAO] Error al modificar: " + e.getMessage());
-        }
-        return exito;
-    }
-
-    /**
+        /**
      * Elimina un libro de la base de datos por su identificador.
      *
      * @param p_idLibro Identificador del libro a eliminar.
@@ -131,35 +98,7 @@ public class LibroDAOImpl implements LibroDAO {
         return exito;
     }
 
-    /**
-     * Recupera un libro por su identificador.
-     *
-     * @param p_idLibro Identificador del libro buscado.
-     * @return Objeto {@link Libro} encontrado, o {@code null} si no existe.
-     * @author (Fernández, Lucía Belén)
-     */
-    public Libro buscarPorId(int p_idLibro) {
-        Libro libro = null;
-        try {
-            PreparedStatement ps = this.conexion.prepareStatement(SQL_BUSCAR_POR_ID);
-            ps.setInt(1, p_idLibro);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                libro = new Libro(
-                        rs.getString("titulo"),
-                        rs.getInt("edicion"),
-                        rs.getString("editorial"),
-                        rs.getInt("anio"));
-            }
-            rs.close();
-            ps.close();
-        } catch (SQLException e) {
-            System.err.println("[LibroDAO] Error al buscar: " + e.getMessage());
-        }
-        return libro;
-    }
-
-    /**
+        /**
      * Recupera todos los libros de una biblioteca.
      *
      * @param p_idBiblioteca Identificador de la biblioteca.
@@ -178,12 +117,14 @@ public class LibroDAOImpl implements LibroDAO {
                         rs.getInt("edicion"),
                         rs.getString("editorial"),
                         rs.getInt("anio"));
+                libro.setIdLibro(rs.getInt("idLibro"));
                 libros.add(libro);
             }
             rs.close();
             ps.close();
         } catch (SQLException e) {
             System.err.println("[LibroDAO] Error al listar: " + e.getMessage());
+            throw new RuntimeException(e);
         }
         return libros;
     }

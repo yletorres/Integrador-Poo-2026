@@ -176,7 +176,12 @@ public class VentanaPrincipal extends JFrame {
         }
 
         menu.add(conMargen(selector, 44));
-        menu.add(Box.createVerticalStrut(26));
+        menu.add(Box.createVerticalStrut(6));
+
+        Boton nueva = new Boton("Nueva biblioteca", Boton.Estilo.TEXTO);
+        nueva.addActionListener(e -> nuevaBiblioteca());
+        menu.add(conMargen(nueva, 36));
+        menu.add(Box.createVerticalStrut(20));
 
         // crea los botones del menu y los conecta con cada pantalla
         for (String nombre : new String[]{"Inicio", "Libros", "Socios", "Préstamos", "Listados", "Informes"}) {
@@ -201,6 +206,39 @@ public class VentanaPrincipal extends JFrame {
         marco.setPreferredSize(new Dimension(268, 0));
         marco.add(menu, BorderLayout.CENTER);
         return marco;
+    }
+
+    /**
+     * Pide el nombre de una biblioteca nueva, la crea y la deja seleccionada.
+     */
+    private void nuevaBiblioteca() {
+        String nombre = JOptionPane.showInputDialog(this, "Nombre de la nueva biblioteca:",
+                "Nueva biblioteca", JOptionPane.PLAIN_MESSAGE);
+        if (nombre == null) {
+            return;
+        }
+        nombre = nombre.trim();
+        if (nombre.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Ingresá un nombre para la biblioteca.",
+                    "Campo vacío", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        for (int i = 0; i < selector.getItemCount(); i++) {
+            if (selector.getItemAt(i).equalsIgnoreCase(nombre)) {
+                JOptionPane.showMessageDialog(this, "Ya existe una biblioteca con ese nombre.",
+                        "Nombre repetido", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+        }
+        try {
+            controlador.crearBiblioteca(nombre);
+            selector.addItem(nombre);
+            selector.setSelectedItem(nombre);
+            refrescarVisible();
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "No se pudo crear la biblioteca: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
     /**
