@@ -1,7 +1,7 @@
-
 package vista.paneles;
 
 import vista.Tema;
+import vista.componentes.Boton;
 import vista.componentes.Tarjeta;
 import controlador.BibliotecaController;
 
@@ -14,21 +14,27 @@ import java.util.List;
 /**
  * Panel encargado de mostrar y gestionar los libros de una biblioteca.
  * Permite registrar nuevos libros, eliminarlos y visualizar sus datos
- * mediante una tabla.
- *
- * La comunicación con la lógica del sistema se realiza a través de
- * la interfaz BibliotecaController.
+ * mediante una tabla. La comunicación con la lógica del sistema se realiza
+ * a través de la interfaz BibliotecaController.
  *
  * @author Azula Iara
  * @version TP7 - 2026
  */
 public class PanelLibros extends PanelSeccion {
 
-    /** Controlador que permite realizar las operaciones sobre los libros. */
+    /**
+     * Controlador que permite realizar las operaciones sobre los libros.
+     */
     private final BibliotecaController controlador;
-    /** Modelo que administra los datos mostrados en la tabla. */
+
+    /**
+     * Modelo que administra los datos mostrados en la tabla.
+     */
     private final DefaultTableModel modelo;
-    /** Tabla que presenta los libros de la biblioteca seleccionada. */
+
+    /**
+     * Tabla que presenta los libros de la biblioteca seleccionada.
+     */
     private final JTable tabla;
 
     /**
@@ -56,12 +62,12 @@ public class PanelLibros extends PanelSeccion {
         JScrollPane scroll = new JScrollPane(tabla);
         Tema.estilizar(scroll);
 
-        Tarjeta tarjeta = new Tarjeta(Tema.PANEL, 32);
+        Tarjeta tarjeta = new Tarjeta(Tema.TINTA_TERRACOTA, 32);
         tarjeta.setBorder(BorderFactory.createEmptyBorder(18, 18, 20, 18));
         tarjeta.add(scroll, BorderLayout.CENTER);
 
-        JButton btnNuevo = crearBoton(" + Nuevo libro ");
-        JButton btnEliminar = crearBoton("Eliminar");
+        Boton btnNuevo = new Boton("+ Nuevo libro");
+        Boton btnEliminar = new Boton("Eliminar", Boton.Estilo.OSCURO);
 
         btnNuevo.addActionListener(e -> nuevoLibro());
         btnEliminar.addActionListener(e -> eliminarLibro());
@@ -82,30 +88,16 @@ public class PanelLibros extends PanelSeccion {
     }
 
     /**
-     * Crea y configura un botón para las acciones del panel.
-     *
-     * @param texto texto que se mostrará en el botón
-     * @return botón configurado
-     */
-    private JButton crearBoton(String texto) {
-        JButton boton = new JButton(texto);
-        boton.setFont(Tema.sans(Font.BOLD, 14));
-        boton.setFocusPainted(false);
-        boton.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        return boton;
-    }
-
-    /**
-     * Configura la apariencia de la tabla de libros.
-     *
-     * Establece la altura de las filas, los colores, el renderizado
-     * de las celdas y oculta la columna del identificador sin eliminarla
-     * del modelo de datos.
+     * Configura la apariencia de la tabla de libros. Establece la altura de
+     * las filas, los colores, el renderizado de las celdas y la cabecera, y
+     * oculta la columna del identificador sin eliminarla del modelo de
+     * datos.
      */
     private void configurarTabla() {
         tabla.setRowHeight(46);
         tabla.setShowGrid(false);
         tabla.setIntercellSpacing(new Dimension(0, 0));
+        tabla.setBackground(Tema.TINTA_TERRACOTA);
         tabla.setSelectionBackground(Tema.SELECCION);
         tabla.setSelectionForeground(Tema.TEXTO);
         tabla.setFillsViewportHeight(true);
@@ -118,7 +110,7 @@ public class PanelLibros extends PanelSeccion {
                         super.getTableCellRendererComponent(t, valor, sel, false, fila, columna);
 
                         setOpaque(true);
-                        setBackground(sel ? Tema.SELECCION : Tema.PANEL);
+                        setBackground(sel ? Tema.SELECCION : Tema.TINTA_TERRACOTA);
                         boolean prestado = "Si".equals(valor);
 
                         setForeground(prestado ? Tema.ACENTO_TEXTO : Tema.TEXTO);
@@ -131,6 +123,9 @@ public class PanelLibros extends PanelSeccion {
                     }
                 });
 
+        tabla.getTableHeader().setFont(Tema.sans(Font.BOLD, 13));
+        tabla.getTableHeader().setBackground(Tema.FONDO);
+        tabla.getTableHeader().setForeground(Tema.TEXTO);
         tabla.getTableHeader().setReorderingAllowed(false);
         tabla.getTableHeader().setPreferredSize(new Dimension(0, 44));
 
@@ -141,13 +136,11 @@ public class PanelLibros extends PanelSeccion {
     }
 
     /**
-     * Solicita los datos necesarios para registrar un libro nuevo.
-     *
-     * Valida que los campos estén completos, que la edición y el año
-     * sean valores numéricos positivos y comunica el resultado al usuario.
-     *
-     * Si los datos son válidos, solicita al controlador que registre el libro
-     * y actualiza la tabla.
+     * Solicita los datos necesarios para registrar un libro nuevo. Valida
+     * que los campos estén completos, que la edición y el año sean valores
+     * numéricos positivos y comunica el resultado al usuario. Si los datos
+     * son válidos, solicita al controlador que registre el libro y actualiza
+     * la tabla.
      */
     private void nuevoLibro() {
         JTextField titulo = new JTextField();
@@ -194,11 +187,9 @@ public class PanelLibros extends PanelSeccion {
     }
 
     /**
-     * Elimina el libro seleccionado de la biblioteca.
-     *
-     * Verifica que exista una fila seleccionada, solicita confirmación
-     * al usuario y comunica la operación al controlador.
-     * Finalmente, actualiza la tabla.
+     * Elimina el libro seleccionado de la biblioteca. Verifica que exista
+     * una fila seleccionada, solicita confirmación al usuario y comunica la
+     * operación al controlador. Finalmente, actualiza la tabla.
      */
     private void eliminarLibro() {
         int fila = tabla.getSelectedRow();
@@ -234,10 +225,8 @@ public class PanelLibros extends PanelSeccion {
 
     /**
      * Actualiza el contenido de la tabla con los libros de la biblioteca
-     * seleccionada.
-     *
-     * Primero elimina las filas existentes y luego incorpora las filas
-     * devueltas por el controlador.
+     * seleccionada. Primero elimina las filas existentes y luego incorpora
+     * las filas devueltas por el controlador.
      */
     @Override
     void refrescar() {

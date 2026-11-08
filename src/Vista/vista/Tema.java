@@ -8,37 +8,117 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-// colores, fuentes y utilidades de dibujo que comparten los componentes de la interfaz
+/**
+ * Colores, fuentes y utilidades de dibujo que comparten los componentes de
+ * la interfaz.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 public final class Tema {
 
+    /**
+     * Evita que la clase de utilidades sea instanciada.
+     */
     private Tema() { }
 
-    // paleta
-    public static final Color CAFE_OSCURO     = new Color(0x3B2A22); // menú lateral, barras oscuras
-    public static final Color CAFE            = new Color(0x4F382E); // elementos sobre el café oscuro
-    public static final Color TERRACOTA       = new Color(0x9E4739); // acento principal
+    /**
+     * Color del menú lateral y las barras oscuras.
+     */
+    public static final Color CAFE_OSCURO     = new Color(0x3B2A22);
+
+    /**
+     * Color de los elementos que van sobre el café oscuro.
+     */
+    public static final Color CAFE            = new Color(0x4F382E);
+
+    /**
+     * Acento principal de la interfaz.
+     */
+    public static final Color TERRACOTA       = new Color(0x9E4739);
+
+    /**
+     * Variante oscura del terracota.
+     */
     public static final Color TERRACOTA_OSC   = new Color(0x7A3429);
-    public static final Color CARAMELO        = new Color(0xD4A373); // fin del degradado
-    public static final Color TINTA_TERRACOTA = new Color(0xFFF3E0); // texto sobre terracota/caramelo
-    public static final Color ACENTO_TEXTO    = new Color(0x9E4739); // terracota legible sobre gris claro
-    public static final Color FONDO           = new Color(0xEBDCC4); // fondo general
-    public static final Color PANEL           = new Color(0x5C3A21); // paneles y tarjetas
-    public static final Color SELECCION       = new Color(0xCAA374); // fila seleccionada
+
+    /**
+     * Color donde termina el degradado.
+     */
+    public static final Color CARAMELO        = new Color(0xD4A373);
+
+    /**
+     * Color del texto sobre terracota o caramelo.
+     */
+    public static final Color TINTA_TERRACOTA = new Color(0xFFF3E0);
+
+    /**
+     * Terracota legible sobre gris claro.
+     */
+    public static final Color ACENTO_TEXTO    = new Color(0x9E4739);
+
+    /**
+     * Color del fondo general.
+     */
+    public static final Color FONDO           = new Color(0xEBDCC4);
+
+    /**
+     * Color de los paneles y las tarjetas.
+     */
+    public static final Color PANEL           = new Color(0x5C3A21);
+
+    /**
+     * Color de la fila seleccionada.
+     */
+    public static final Color SELECCION       = new Color(0xCAA374);
+
+    /**
+     * Color de las líneas divisorias.
+     */
     public static final Color LINEA           = new Color(0xCBB79E);
+
+    /**
+     * Color del texto principal.
+     */
     public static final Color TEXTO           = new Color(0x3B2A22);
+
+    /**
+     * Color del texto secundario.
+     */
     public static final Color TEXTO_SUAVE     = new Color(0x7A6555);
+
+    /**
+     * Color del texto sobre fondos oscuros.
+     */
     public static final Color TEXTO_CLARO     = new Color(0xF3E8D6);
 
-    // busca las fuentes disponibles para usar las primeras que encuentre
+    /**
+     * Familias de fuentes disponibles en el sistema, para usar las primeras
+     * que se encuentren.
+     */
     private static final Set<String> FAMILIAS = new HashSet<>(Arrays.asList(
             GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames()));
 
+    /**
+     * Familia sans serif elegida para los textos de la interfaz.
+     */
     private static final String SANS = elegir(Font.SANS_SERIF,
             "Poppins", "Montserrat", "Segoe UI", "Helvetica Neue", "Calibri", "Arial");
 
+    /**
+     * Familia de ancho fijo elegida para los listados.
+     */
     private static final String MONO = elegir(Font.MONOSPACED,
             "Cascadia Mono", "Consolas", "JetBrains Mono", "Menlo", "DejaVu Sans Mono");
 
+    /**
+     * Devuelve la primera familia preferida que esté disponible, o la
+     * familia por defecto si no hay ninguna.
+     *
+     * @param porDefecto familia a usar si no se encuentra ninguna preferida
+     * @param preferidas familias a buscar, en orden de preferencia
+     * @return el nombre de la familia elegida
+     */
     private static String elegir(String porDefecto, String... preferidas) {
         for (String f : preferidas) {
             if (FAMILIAS.contains(f)) return f;
@@ -46,16 +126,35 @@ public final class Tema {
         return porDefecto;
     }
 
+    /**
+     * Devuelve una fuente sans serif con el estilo y el tamaño indicados.
+     *
+     * @param estilo   estilo de la fuente (Font.PLAIN, Font.BOLD, etc.)
+     * @param tamanio  tamaño de la fuente
+     * @return la fuente creada
+     */
     public static Font sans(int estilo, float tamanio) {
         return new Font(SANS, estilo, 12).deriveFont(tamanio);
     }
 
-    // fuente de ancho fijo para que los listados mantengan su formato
+    /**
+     * Devuelve una fuente de ancho fijo para que los listados mantengan su
+     * formato.
+     *
+     * @param tamanio tamaño de la fuente
+     * @return la fuente creada
+     */
     public static Font mono(float tamanio) {
         return new Font(MONO, Font.PLAIN, 12).deriveFont(tamanio);
     }
 
-    // utilidades para dibujar los componentes personalizados
+    /**
+     * Crea una copia del contexto gráfico con el suavizado activado, para
+     * dibujar los componentes personalizados.
+     *
+     * @param g contexto gráfico original
+     * @return el contexto gráfico con suavizado
+     */
     public static Graphics2D suavizar(Graphics g) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -64,13 +163,32 @@ public final class Tema {
         return g2;
     }
 
+    /**
+     * Devuelve el mismo color con la transparencia indicada.
+     *
+     * @param c    color original
+     * @param alfa transparencia, de 0 (transparente) a 255 (opaco)
+     * @return el color con el nuevo valor alfa
+     */
     public static Color conAlfa(Color c, int alfa) {
         return new Color(c.getRed(), c.getGreen(), c.getBlue(), alfa);
     }
 
-    // crea una figura con un radio independiente para cada esquina
+    /**
+     * Crea una figura con un radio independiente para cada esquina.
+     *
+     * @param x  posición horizontal
+     * @param y  posición vertical
+     * @param w  ancho
+     * @param h  alto
+     * @param tl radio de la esquina superior izquierda
+     * @param tr radio de la esquina superior derecha
+     * @param br radio de la esquina inferior derecha
+     * @param bl radio de la esquina inferior izquierda
+     * @return la figura creada
+     */
     public static Path2D forma(double x, double y, double w, double h,
-                            double tl, double tr, double br, double bl) {
+                               double tl, double tr, double br, double bl) {
         final double k = 0.4477; // 1 - 0.5523: aproxima un cuarto de círculo con una curva Bézier
         double max = Math.min(w, h) / 2; // un radio mayor a la mitad del lado deforma la figura
         tl = Math.min(tl, max); tr = Math.min(tr, max); br = Math.min(br, max); bl = Math.min(bl, max);
@@ -88,12 +206,20 @@ public final class Tema {
         return p;
     }
 
-    // genera el degradado diagonal de terracota a caramelo
+    /**
+     * Genera el degradado diagonal de terracota a caramelo.
+     *
+     * @param ancho ancho del área a cubrir
+     * @param alto  alto del área a cubrir
+     * @return el degradado creado
+     */
     public static Paint degradado(int ancho, int alto) {
         return new GradientPaint(0, 0, TERRACOTA, ancho, alto, CARAMELO);
     }
 
-    // configura las fuentes que usan los componentes estandar de swing
+    /**
+     * Configura las fuentes que usan los componentes estándar de Swing.
+     */
     public static void instalar() {
         UIManager.put("OptionPane.messageFont", sans(Font.PLAIN, 14));
         UIManager.put("OptionPane.buttonFont", sans(Font.BOLD, 13));
@@ -103,7 +229,12 @@ public final class Tema {
         UIManager.put("ComboBox.font", sans(Font.PLAIN, 14));
     }
 
-    // personaliza las barras de desplazamiento para que sean mas finas y no tengan flechas
+    /**
+     * Personaliza las barras de desplazamiento para que sean más finas y no
+     * tengan flechas.
+     *
+     * @param sp panel de desplazamiento a personalizar
+     */
     public static void estilizar(JScrollPane sp) {
         sp.setBorder(BorderFactory.createEmptyBorder());
         sp.setOpaque(false);
@@ -129,6 +260,12 @@ public final class Tema {
         }
     }
 
+    /**
+     * Crea un botón sin tamaño, para quitar las flechas de las barras de
+     * desplazamiento.
+     *
+     * @return el botón invisible
+     */
     private static JButton sinBoton() {
         JButton b = new JButton();
         b.setPreferredSize(new Dimension(0, 0));

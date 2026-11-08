@@ -109,6 +109,7 @@ public interface BibliotecaController { /* define métodos que otras clases est�
      *
      * @param p_titulo título del libro que se devuelve
      * @throws LibroNoPrestadoException si ningún ejemplar de ese título está prestado
+     * @throws IllegalArgumentException si no existe ningún libro con ese título
      */
     public abstract void devolverLibro(String p_titulo) throws LibroNoPrestadoException;
 
@@ -119,6 +120,7 @@ public interface BibliotecaController { /* define métodos que otras clases est�
      * @param p_titulo título del libro que se devuelve
      * @param p_dni    DNI del socio que lo devuelve
      * @throws LibroNoPrestadoException si ese socio no tiene en préstamo un ejemplar de ese título
+     * @throws IllegalArgumentException si no existe ningún libro con ese título
      */
     public abstract void devolverLibro(String p_titulo, int p_dni) throws LibroNoPrestadoException;
 
@@ -146,6 +148,7 @@ public interface BibliotecaController { /* define métodos que otras clases est�
      * @param p_titulo título del libro a consultar
      * @return nombre del socio que tiene el libro
      * @throws LibroNoPrestadoException si el libro no está prestado
+     * @throws IllegalArgumentException si no existe ningún libro con ese título
      */
     public abstract String quienTieneElLibro(String p_titulo) throws LibroNoPrestadoException;
 

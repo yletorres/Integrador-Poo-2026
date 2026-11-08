@@ -383,32 +383,22 @@ public class BibliotecaControllerImpl implements BibliotecaController {
 
     @Override
     public void devolverLibro(String p_titulo) throws LibroNoPrestadoException {
-        Libro libro = this.buscarLibroParaConsulta(p_titulo);
-
-        if (libro == null) {
-            throw new LibroNoPrestadoException("El libro " + p_titulo
-                    + " no se puede devolver ya que se encuentra en la biblioteca");
-        }
+        // Lanza IllegalArgumentException si el título no existe.
+        Libro libro = this.ejemplarDelTitulo(p_titulo);
 
         this.devolverEjemplar(libro);
     }
 
     @Override
     public void devolverLibro(String p_titulo, int p_dni) throws LibroNoPrestadoException {
-        Libro libro = null;
+        // Lanza IllegalArgumentException si el título no existe.
+        this.ejemplarDelTitulo(p_titulo);
 
         // Entre los ejemplares prestados del título, busca el que tiene ese socio.
-        for (Libro libroActual : this.bibliotecaActiva().getLibros()) {
-            if (libroActual.getTitulo().equals(p_titulo) && libroActual.prestado()
-                    && libroActual.ultimoPrestamo().getSocio().getDniSocio() == p_dni) {
-                libro = libroActual;
-                break;
-            }
-        }
+        Libro libro = this.buscarLibro(p_titulo, true, p_dni);
 
         if (libro == null) {
-            throw new LibroNoPrestadoException("El libro " + p_titulo
-                    + " no se puede devolver ya que se encuentra en la biblioteca");
+            throw new LibroNoPrestadoException(this.mensajeNoSePuedeDevolver(p_titulo));
         }
 
         this.devolverEjemplar(libro);
@@ -443,7 +433,8 @@ public class BibliotecaControllerImpl implements BibliotecaController {
             return filas;
         }
 
-        Calendar hoy = new GregorianCalendar();
+        // La biblioteca ya sabe cuáles son los préstamos vencidos a hoy.
+        ArrayList<Prestamo> vencidos = this.getBibliotecaSeleccionada().prestamosVencidos();
         for (Libro libroActual : this.getBibliotecaSeleccionada().getLibros()) {
             if (libroActual.prestado()) {
                 Prestamo prestamo = libroActual.ultimoPrestamo();
@@ -451,7 +442,7 @@ public class BibliotecaControllerImpl implements BibliotecaController {
                         libroActual.getTitulo(),
                         prestamo.getSocio().getDniSocio(),
                         prestamo.getSocio().getNombre(),
-                        prestamo.vencido(hoy) ? "Vencido" : "Prestado"
+                        vencidos.contains(prestamo) ? "Vencido" : "Prestado"
                 };
                 filas.add(fila);
             }
@@ -469,12 +460,10 @@ public class BibliotecaControllerImpl implements BibliotecaController {
 
     @Override
     public String quienTieneElLibro(String p_titulo) throws LibroNoPrestadoException {
-        Libro libro = this.buscarLibroParaConsulta(p_titulo);
+        // Lanza IllegalArgumentException si el título no existe.
+        Libro libro = this.ejemplarDelTitulo(p_titulo);
 
-        if (libro == null) {
-            throw new LibroNoPrestadoException("El libro se encuentra en la biblioteca");
-        }
-
+        // Lanza LibroNoPrestadoException si el ejemplar está en la biblioteca.
         return this.bibliotecaActiva().quienTieneElLibro(libro);
     }
 
@@ -542,12 +531,51 @@ public class BibliotecaControllerImpl implements BibliotecaController {
      * @return el primer ejemplar que cumple, o null si no hay
      */
     private Libro buscarLibro(String p_titulo, boolean p_prestado) {
+        return this.buscarLibro(p_titulo, p_prestado, null);
+    }
+
+    /**
+     * Busca un ejemplar por título según esté prestado o no y, si se indica un DNI,
+     * que lo tenga ese socio. Es el único lugar donde se recorren los libros por título.
+     *
+     * @param p_titulo   título buscado
+     * @param p_prestado true para buscar un ejemplar prestado, false para uno disponible
+     * @param p_dni      DNI del socio que debe tenerlo (solo con p_prestado en true), o null para cualquiera
+     * @return el primer ejemplar que cumple, o null si no hay
+     */
+    private Libro buscarLibro(String p_titulo, boolean p_prestado, Integer p_dni) {
         for (Libro libroActual : this.bibliotecaActiva().getLibros()) {
-            if (libroActual.getTitulo().equals(p_titulo) && libroActual.prestado() == p_prestado) {
+            if (libroActual.getTitulo().equals(p_titulo) && libroActual.prestado() == p_prestado
+                    && (p_dni == null || libroActual.ultimoPrestamo().getSocio().getDniSocio() == p_dni)) {
                 return libroActual;
             }
         }
         return null;
+    }
+
+    /**
+     * Busca un ejemplar de un título que existe, para devolverlo o consultar quién lo tiene.
+     *
+     * @param p_titulo título buscado
+     * @return ejemplar del título (prestado si hay alguno prestado)
+     * @throws IllegalArgumentException si no existe ningún libro con ese título
+     */
+    private Libro ejemplarDelTitulo(String p_titulo) {
+        Libro libro = this.buscarLibroParaConsulta(p_titulo);
+        if (libro == null) {
+            throw new IllegalArgumentException("No existe un libro con el título " + p_titulo);
+        }
+        return libro;
+    }
+
+    /**
+     * Mensaje cuando se intenta devolver un libro que está en la biblioteca.
+     *
+     * @param p_titulo título del libro
+     * @return mensaje para la excepción
+     */
+    private String mensajeNoSePuedeDevolver(String p_titulo) {
+        return "El libro " + p_titulo + " no se puede devolver ya que se encuentra en la biblioteca";
     }
 
     /**

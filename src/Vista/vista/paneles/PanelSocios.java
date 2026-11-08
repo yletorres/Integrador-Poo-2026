@@ -1,8 +1,8 @@
-
 package vista.paneles;
 
 import controlador.BibliotecaController;
 import vista.Tema;
+import vista.componentes.Boton;
 import vista.componentes.Tarjeta;
 
 import javax.swing.*;
@@ -11,23 +11,29 @@ import java.awt.*;
 
 /**
  * Panel encargado de visualizar y gestionar los socios de una biblioteca.
- *
- * Permite registrar estudiantes y docentes, modificar sus datos,
- * eliminar socios y consultar la cantidad de libros que tienen prestados.
- *
- * La comunicación con la lógica del sistema se realiza mediante
- * la interfaz BibliotecaController.
+ * Permite registrar estudiantes y docentes, modificar sus datos, eliminar
+ * socios y consultar la cantidad de libros que tienen prestados. La
+ * comunicación con la lógica del sistema se realiza mediante la interfaz
+ * BibliotecaController.
  *
  * @author Azula Iara
  * @version TP7 - 2026
  */
 public class PanelSocios extends PanelSeccion {
 
-    /** Controlador encargado de gestionar las operaciones de los socios. */
+    /**
+     * Controlador encargado de gestionar las operaciones de los socios.
+     */
     private final BibliotecaController controlador;
-    /** Modelo que administra los datos mostrados en la tabla. */
+
+    /**
+     * Modelo que administra los datos mostrados en la tabla.
+     */
     private final DefaultTableModel modelo;
-    /** Tabla que muestra los socios registrados en la biblioteca. */
+
+    /**
+     * Tabla que muestra los socios registrados en la biblioteca.
+     */
     private final JTable tabla;
 
     /**
@@ -54,15 +60,18 @@ public class PanelSocios extends PanelSeccion {
         tabla = new JTable(modelo);
         configurarTabla();
 
-        Tarjeta tarjeta = new Tarjeta(Color.WHITE, 20);
+        JScrollPane desplazamiento = new JScrollPane(tabla);
+        Tema.estilizar(desplazamiento);
+
+        Tarjeta tarjeta = new Tarjeta(Tema.TINTA_TERRACOTA, 20);
         tarjeta.setLayout(new BorderLayout());
-        tarjeta.add(new JScrollPane(tabla), BorderLayout.CENTER);
+        tarjeta.add(desplazamiento, BorderLayout.CENTER);
 
         JPanel acciones = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         acciones.setOpaque(false);
 
-        JButton nuevo = new JButton(" + Nuevo socio ");
-        JButton eliminar = new JButton("Eliminar");
+        Boton nuevo = new Boton("+ Nuevo socio");
+        Boton eliminar = new Boton("Eliminar", Boton.Estilo.OSCURO);
 
         nuevo.addActionListener(e -> nuevoSocio());
         eliminar.addActionListener(e -> eliminarSocio());
@@ -81,20 +90,19 @@ public class PanelSocios extends PanelSeccion {
     }
 
     /**
-     * Configura la apariencia visual de la tabla de socios.
-     *
-     * Establece la altura de las filas, los colores, la tipografía,
-     * la selección y las características de la cabecera.
+     * Configura la apariencia visual de la tabla de socios. Establece la
+     * altura de las filas, los colores, la tipografía, la selección y las
+     * características de la cabecera.
      */
     private void configurarTabla() {
         tabla.setRowHeight(46);
         tabla.setFont(Tema.sans(Font.PLAIN, 14));
         tabla.setForeground(Tema.TEXTO);
-        tabla.setBackground(Color.WHITE);
-        tabla.setSelectionBackground(Tema.FONDO);
+        tabla.setBackground(Tema.TINTA_TERRACOTA);
+        tabla.setSelectionBackground(Tema.SELECCION);
         tabla.setSelectionForeground(Tema.TEXTO);
         tabla.setShowVerticalLines(false);
-        tabla.setGridColor(Tema.FONDO);
+        tabla.setGridColor(Tema.LINEA);
         tabla.setFillsViewportHeight(true);
 
         tabla.getTableHeader().setFont(Tema.sans(Font.BOLD, 13));
@@ -104,14 +112,11 @@ public class PanelSocios extends PanelSeccion {
     }
 
     /**
-     * Solicita los datos necesarios para registrar un nuevo socio.
-     *
-     * Permite seleccionar si el socio es estudiante o docente y solicita
-     * la carrera o el área correspondiente.
-     *
-     * Valida que los campos estén completos y que el DNI sea un número
-     * positivo. Luego solicita al controlador registrar el socio
-     * y actualiza la tabla.
+     * Solicita los datos necesarios para registrar un nuevo socio. Permite
+     * seleccionar si el socio es estudiante o docente y solicita la carrera
+     * o el área correspondiente. Valida que los campos estén completos y que
+     * el DNI sea un número positivo. Luego solicita al controlador registrar
+     * el socio y actualiza la tabla.
      */
     private void nuevoSocio() {
         JTextField dni = new JTextField();
@@ -175,11 +180,10 @@ public class PanelSocios extends PanelSeccion {
     }
 
     /**
-     * Elimina el socio seleccionado de la biblioteca.
-     *
-     * Verifica que exista una fila seleccionada, solicita confirmación
-     * y comunica la eliminación al controlador.
-     * Si la operación se realiza correctamente, actualiza la tabla.
+     * Elimina el socio seleccionado de la biblioteca. Verifica que exista
+     * una fila seleccionada, solicita confirmación y comunica la eliminación
+     * al controlador. Si la operación se realiza correctamente, actualiza la
+     * tabla.
      */
     private void eliminarSocio() {
         int fila = tabla.getSelectedRow();
@@ -213,8 +217,8 @@ public class PanelSocios extends PanelSeccion {
     /**
      * Muestra un mensaje de error mediante una ventana de diálogo.
      *
-     * @param mensaje descripción del error ocurrido; si es null,
-     *                se muestra un mensaje genérico
+     * @param mensaje descripción del error ocurrido; si es null, se muestra
+     *                un mensaje genérico
      */
     private void mostrarError(String mensaje) {
         JOptionPane.showMessageDialog(this, mensaje == null ? "Ocurrió un error." : mensaje,"Error", JOptionPane.ERROR_MESSAGE);
@@ -222,9 +226,8 @@ public class PanelSocios extends PanelSeccion {
 
     /**
      * Actualiza la tabla con los socios de la biblioteca seleccionada.
-     *
-     * Elimina las filas existentes y agrega los datos obtenidos
-     * desde el controlador.
+     * Elimina las filas existentes y agrega los datos obtenidos desde el
+     * controlador.
      */
     @Override
     public void refrescar() {
