@@ -55,8 +55,6 @@ public class VentanaPrincipal extends JFrame {
 
         agregar("Libros", new PanelLibros(controlador));
         agregar("Socios", new PanelSocios(controlador));
-        agregar("Préstamos", new PanelPendiente("Préstamos", "Retiros y devoluciones",
-                "Acá vas a poder registrar un préstamo y una devolución."));
         agregar("Listados", new PanelListados(controlador));
         agregar("Informes", new PanelInformes(controlador));
 
@@ -117,6 +115,13 @@ public class VentanaPrincipal extends JFrame {
             controlador.seleccionarBiblioteca((String) selector.getSelectedItem());
             refrescarVisible();
         });
+
+        //start de info
+        if (selector.getItemCount() > 0 ){
+            controlador.seleccionarBiblioteca((String) selector.getSelectedItem());
+            refrescarVisible();
+        }
+
         menu.add(conMargen(selector, 44));
         menu.add(Box.createVerticalStrut(26));
 
