@@ -131,7 +131,7 @@ public abstract class Socio {
     public abstract String soyDeLaClase();
 
     /**
-     * Describe al socio con DNI, nombre, tipo y cantidad de libros prestados.
+     * Describe al socio con DNI, nombre y tipo
      *
      * @return texto con el formato pedido en la consigna
      */
