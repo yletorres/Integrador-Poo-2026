@@ -10,4 +10,8 @@ public interface LibroDAO {
     void insertar(Libro libro, int idBiblioteca);
 
     Libro buscarPorId(int idLibro);
+
+    boolean eliminar(int idLibro);
+
+    List<Object[]> obtenerFilasConIdPorBiblioteca(int idBiblioteca);
 }

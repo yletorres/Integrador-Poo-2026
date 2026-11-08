@@ -23,8 +23,13 @@ public class LibroDAOImpl implements LibroDAO {
 
     private static final String SQL_BUSCAR_POR_ID = "SELECT idLibro, titulo, edicion, editorial, anio FROM libro WHERE idLibro = ?";
 
-    private static final String SQL_LISTAR_TODOS = "SELECT idLibro, titulo, edicion, editorial, anio FROM libro WHERE idBiblioteca = ?";
+    private static final String SQL_LISTAR_TODOS = "SELECT l.idLibro, l.titulo, l.edicion, l.editorial, l.anio, " +
+                    "CASE WHEN EXISTS (" + "SELECT 1 FROM prestamo p " +  "WHERE p.idLibro = l.idLibro AND p.fechaDevolucion IS NULL" +") " +
+                    "THEN 'Si' ELSE 'No' END AS prestado " + "FROM libro l WHERE l.idBiblioteca = ?";
 
+    private static final String SQL_LISTAR_CON_ESTADO = "SELECT l.idLibro, l.titulo, l.edicion, l.editorial, l.anio, " +
+                    "CASE WHEN EXISTS (" + "SELECT 1 FROM prestamo p " + "WHERE p.idLibro = l.idLibro AND p.fechaDevolucion IS NULL" +
+                    ") THEN 'Si' ELSE 'No' END AS prestado " + "FROM libro l WHERE l.idBiblioteca = ?";
     // ====================== ATRIBUTOS ======================
 
     /** Conexión JDBC reutilizada en cada operación. */
@@ -181,5 +186,45 @@ public class LibroDAOImpl implements LibroDAO {
             System.err.println("[LibroDAO] Error al listar: " + e.getMessage());
         }
         return libros;
+    }
+
+    /**
+     * Recupera los datos de los libros junto con su identificador.
+     *
+     * @param p_idBiblioteca identificador de la biblioteca.
+     * @return lista de filas con ID, título, edición, editorial y año.
+     */
+    @Override
+    public List<Object[]> obtenerFilasConIdPorBiblioteca(int p_idBiblioteca) {
+        List<Object[]> filas = new ArrayList<>();
+
+        try {
+            PreparedStatement ps = this.conexion.prepareStatement(SQL_LISTAR_TODOS);
+            ps.setInt(1, p_idBiblioteca);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Object[] fila = {
+                        rs.getInt("idLibro"),
+                        rs.getString("titulo"),
+                        rs.getInt("edicion"),
+                        rs.getString("editorial"),
+                        rs.getInt("anio"),
+                        rs.getString("prestado")
+                };
+
+                filas.add(fila);
+            }
+
+            rs.close();
+            ps.close();
+
+        } catch (SQLException e) {
+            System.err.println("[LibroDAO] Error al listar libros con ID: " + e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+        return filas;
     }
 }

@@ -35,12 +35,6 @@ public class SocioDAOImpl implements SocioDAO {
 
     private static final String SQL_INSERTAR_ESTUDIANTE = "INSERT INTO estudiante (dniSocio, carrera) VALUES (?, ?)";
 
-    private static final String SQL_MODIFICAR_SOCIO = "UPDATE socio SET nombre = ?, diasPrestamo = ? WHERE dniSocio = ?";
-
-    private static final String SQL_MODIFICAR_DOCENTE = "UPDATE docente SET area = ? WHERE dniSocio = ?";
-
-    private static final String SQL_MODIFICAR_ESTUDIANTE = "UPDATE estudiante SET carrera = ? WHERE dniSocio = ?";
-
     private static final String SQL_ELIMINAR_DOCENTE = "DELETE FROM docente WHERE dniSocio = ?";
 
     private static final String SQL_ELIMINAR_ESTUDIANTE = "DELETE FROM estudiante WHERE dniSocio = ?";
@@ -122,49 +116,6 @@ public class SocioDAOImpl implements SocioDAO {
         } catch (SQLException e) {
             System.err.println("[SocioDAO] Error al guardar: " + e.getMessage());
         }
-    }
-
-    /**
-     * Actualiza los datos de un socio existente en ambas tablas.
-     *
-     * @param p_socio Objeto {@link Socio} con los nuevos valores.
-     * @return {@code true} si se modificó al menos una fila.
-     * @author (Fernández, Lucía Belén)
-     */
-    public boolean modificar(Socio p_socio) {
-        boolean exito = false;
-        try {
-            // 1. Actualizar tabla socio
-            PreparedStatement psSocio = this.conexion.prepareStatement(SQL_MODIFICAR_SOCIO);
-            psSocio.setString(1, p_socio.getNombre());
-            psSocio.setInt(2, p_socio.getDiasPrestamo());
-            psSocio.setInt(3, p_socio.getDniSocio());
-            psSocio.executeUpdate();
-            psSocio.close();
-
-            // 2. Actualizar subtabla
-            if (p_socio instanceof Docente) {
-                Docente docente = (Docente) p_socio;
-                PreparedStatement psDoc = this.conexion.prepareStatement(SQL_MODIFICAR_DOCENTE);
-                psDoc.setString(1, docente.getArea());
-                psDoc.setInt(2, docente.getDniSocio());
-                psDoc.executeUpdate();
-                psDoc.close();
-            } else if (p_socio instanceof Estudiante) {
-                Estudiante estudiante = (Estudiante) p_socio;
-                PreparedStatement psEst = this.conexion.prepareStatement(SQL_MODIFICAR_ESTUDIANTE);
-                psEst.setString(1, estudiante.getCarrera());
-                psEst.setInt(2, estudiante.getDniSocio());
-                psEst.executeUpdate();
-                psEst.close();
-            }
-
-            exito = true;
-            System.out.println("[SocioDAO] Socio modificado (DNI=" + p_socio.getDniSocio() + ")");
-        } catch (SQLException e) {
-            System.err.println("[SocioDAO] Error al modificar: " + e.getMessage());
-        }
-        return exito;
     }
 
     /**
