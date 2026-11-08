@@ -12,14 +12,32 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
-
-// panel con las consultas de la consigna sobre socios, prestamos y docentes responsables
-// recibe los resultados del controlador y se encarga de mostrarlos
+/**
+ * Panel con las consultas de la consigna sobre socios, préstamos y docentes
+ * responsables. Recibe los resultados del controlador y se encarga de
+ * mostrarlos.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 class PanelInformes extends PanelSeccion {
 
+    /**
+     * Controlador que provee los resultados de las consultas.
+     */
     private final BibliotecaController controlador;
+
+    /**
+     * Componente que muestra el listado de docentes responsables.
+     */
     private final Listado docentes = new Listado();
 
+    /**
+     * Construye el panel con las tarjetas de cantidad de socios, búsqueda de
+     * libros y docentes responsables.
+     *
+     * @param controlador controlador que provee los resultados de las consultas
+     */
     PanelInformes(BibliotecaController controlador) {
         this.controlador = controlador;
         add(encabezado("Informes", "Las consultas que necesita la administración de la biblioteca"), BorderLayout.NORTH);
@@ -37,7 +55,11 @@ class PanelInformes extends PanelSeccion {
         add(cuerpo, BorderLayout.CENTER);
     }
 
-    // cantidad de socios por tipo
+    /**
+     * Crea la tarjeta que muestra la cantidad de socios según su tipo.
+     *
+     * @return la tarjeta de cantidad de socios
+     */
     private Tarjeta tarjetaCantidad() {
         JLabel numero = new JLabel("–");
         numero.setFont(Tema.sans(Font.BOLD, 56));
@@ -74,7 +96,12 @@ class PanelInformes extends PanelSeccion {
         return tarjeta("¿Cuántos socios hay de cada tipo?", fila(estudiantes, docentesBtn), resultado);
     }
 
-    // consulta de quién tiene un libro
+    /**
+     * Crea la tarjeta que consulta quién tiene un libro. Muestra si el libro
+     * está prestado o si sigue en la biblioteca.
+     *
+     * @return la tarjeta de búsqueda de libros
+     */
     private Tarjeta tarjetaQuienTiene() {
         JTextField campo = new JTextField();
         campo.setOpaque(false);
@@ -82,7 +109,7 @@ class PanelInformes extends PanelSeccion {
         campo.setFont(Tema.sans(Font.PLAIN, 15));
         campo.setForeground(Tema.TEXTO);
         campo.setCaretColor(Tema.CAFE_OSCURO);
-        Tarjeta caja = new Tarjeta(Color.WHITE, 40);
+        Tarjeta caja = new Tarjeta(Tema.TINTA_TERRACOTA, 40);
         caja.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20));
         caja.add(campo, BorderLayout.CENTER);
 
@@ -135,13 +162,23 @@ class PanelInformes extends PanelSeccion {
         return tarjeta("¿Quién tiene este libro?", entrada, salida);
     }
 
-    // docentes responsables
+    /**
+     * Crea la tarjeta con los docentes responsables.
+     *
+     * @return la tarjeta de docentes que nunca adeudaron libros
+     */
     private Tarjeta tarjetaDocentes() {
         return tarjeta("Docentes que nunca adeudaron libros", null, docentes);
     }
 
-    // utilidades
-    // arma una tarjeta con titulo, controles opcionales y contenido
+    /**
+     * Arma una tarjeta con título, controles opcionales y contenido.
+     *
+     * @param titulo    título de la tarjeta
+     * @param controles componente con los controles, o null si no tiene
+     * @param contenido componente con el contenido principal
+     * @return la tarjeta armada
+     */
     private static Tarjeta tarjeta(String titulo, JComponent controles, JComponent contenido) {
         Tarjeta t = new Tarjeta(Tema.PANEL, 30);
         t.setLayout(new BorderLayout(0, 14));
@@ -157,7 +194,12 @@ class PanelInformes extends PanelSeccion {
         return t;
     }
 
-    //acomoda varios botones en una misma fila con separacion entre ellos
+    /**
+     * Acomoda varios botones en una misma fila con separación entre ellos.
+     *
+     * @param botones componentes a acomodar
+     * @return el panel con la fila armada
+     */
     private static JPanel fila(JComponent... botones) {
         JPanel p = new JPanel();
         p.setOpaque(false);
@@ -170,6 +212,9 @@ class PanelInformes extends PanelSeccion {
         return p;
     }
 
+    /**
+     * Actualiza el listado de docentes responsables con los datos actuales.
+     */
     @Override
     void refrescar() {
         docentes.setTexto(controlador.listaDeDocentesResponsables());

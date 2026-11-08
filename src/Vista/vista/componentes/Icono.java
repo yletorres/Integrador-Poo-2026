@@ -8,18 +8,92 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
 import java.awt.geom.RoundRectangle2D;
 
+/**
+ * Ícono dibujado con trazos para las secciones del menú y otros elementos de
+ * la interfaz.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 public class Icono implements Icon {
 
-    public enum Tipo { INICIO, LIBROS, SOCIOS, PRESTAMOS, LISTADOS, INFORMES, SALIR, LIBRO_VACIO }
+    /**
+     * Tipos de ícono que se pueden dibujar.
+     *
+     * @author Yleana Torres
+     * @version TP7 - 2026
+     */
+    public enum Tipo {
 
+        /**
+         * Casa de la pantalla de inicio.
+         */
+        INICIO,
+
+        /**
+         * Libro de la sección de libros.
+         */
+        LIBROS,
+
+        /**
+         * Personas de la sección de socios.
+         */
+        SOCIOS,
+
+        /**
+         * Flechas de la sección de préstamos.
+         */
+        PRESTAMOS,
+
+        /**
+         * Lista de la sección de listados.
+         */
+        LISTADOS,
+
+        /**
+         * Barras de la sección de informes.
+         */
+        INFORMES,
+
+        /**
+         * Flecha de salida.
+         */
+        SALIR,
+
+        /**
+         * Libro abierto y vacío.
+         */
+        LIBRO_VACIO
+    }
+
+    /**
+     * Tipo de ícono que se dibuja.
+     */
     private final Tipo tipo;
+
+    /**
+     * Tamaño del ícono en píxeles.
+     */
     private final int tamanio;
 
+    /**
+     * Crea un ícono del tipo y el tamaño indicados.
+     *
+     * @param tipo    tipo de ícono a dibujar
+     * @param tamanio tamaño del ícono en píxeles
+     */
     public Icono(Tipo tipo, int tamanio) {
         this.tipo = tipo;
         this.tamanio = tamanio;
     }
 
+    /**
+     * Crea el ícono que corresponde a una sección del menú.
+     *
+     * @param seccion nombre de la sección
+     * @param tamanio tamaño del ícono en píxeles
+     * @return el ícono de la sección, o el de inicio si no la reconoce
+     */
     public static Icono para(String seccion, int tamanio) {
         switch (seccion) {
             case "Libros": return new Icono(Tipo.LIBROS, tamanio);
@@ -31,16 +105,34 @@ public class Icono implements Icon {
         }
     }
 
+    /**
+     * Devuelve el ancho del ícono.
+     *
+     * @return el ancho en píxeles
+     */
     @Override
     public int getIconWidth() {
         return tamanio;
     }
 
+    /**
+     * Devuelve el alto del ícono.
+     *
+     * @return el alto en píxeles
+     */
     @Override
     public int getIconHeight() {
         return tamanio;
     }
 
+    /**
+     * Dibuja el ícono con el color del componente donde se muestra.
+     *
+     * @param c componente donde se dibuja, o null si no hay
+     * @param g contexto gráfico donde se dibuja
+     * @param x posición horizontal
+     * @param y posición vertical
+     */
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
         Graphics2D g2 = Tema.suavizar(g);
@@ -48,6 +140,16 @@ public class Icono implements Icon {
         g2.dispose();
     }
 
+    /**
+     * Dibuja un ícono del tipo indicado en la posición y el tamaño dados.
+     *
+     * @param g       contexto gráfico donde se dibuja
+     * @param tipo    tipo de ícono a dibujar
+     * @param x       posición horizontal
+     * @param y       posición vertical
+     * @param tamanio tamaño del ícono en píxeles
+     * @param color   color de los trazos
+     */
     public static void dibujar(Graphics2D g, Tipo tipo, double x, double y, double tamanio, Color color) {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.translate(x, y);

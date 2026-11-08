@@ -10,17 +10,69 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- * boton redondeado con distintos estilos para usar según el fondo y la importancia de cada acción
- * también tiene un efecto al pasar el mouse y un indicador cuando recibe el foco del teclado
+ * Botón redondeado con distintos estilos para usar según el fondo y la
+ * importancia de cada acción. También tiene un efecto al pasar el mouse y un
+ * indicador cuando recibe el foco del teclado.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
  */
 public class Boton extends JButton {
 
-    public enum Estilo { PRINCIPAL, OSCURO, CLARO, SALIDA, TEXTO }
+    /**
+     * Estilos disponibles para el botón.
+     *
+     * @author Yleana Torres
+     * @version TP7 - 2026
+     */
+    public enum Estilo {
 
+        /**
+         * Botón con degradado terracota para la acción principal.
+         */
+        PRINCIPAL,
+
+        /**
+         * Botón café para acciones secundarias.
+         */
+        OSCURO,
+
+        /**
+         * Botón claro para usar sobre fondos claros.
+         */
+        CLARO,
+
+        /**
+         * Botón transparente con borde para usar sobre fondos oscuros.
+         */
+        SALIDA,
+
+        /**
+         * Botón sin fondo que solo muestra el texto.
+         */
+        TEXTO
+    }
+
+    /**
+     * Estilo con el que se dibuja el botón.
+     */
     private Estilo estilo = Estilo.PRINCIPAL;
+
+    /**
+     * Indica si el cursor está encima del botón.
+     */
     private boolean encima;
+
+    /**
+     * Indica si el foco llegó por el teclado, para dibujar el contorno.
+     */
     private boolean focoPorTeclado;
 
+    /**
+     * Crea un botón con el texto indicado y el estilo principal.
+     *
+     * @param texto texto del botón
+     */
     public Boton(String texto) {
         super(texto);
 
@@ -47,22 +99,39 @@ public class Boton extends JButton {
         });
     }
 
+    /**
+     * Crea un botón con el texto y el estilo indicados.
+     *
+     * @param texto  texto del botón
+     * @param estilo estilo con el que se dibuja el botón
+     */
     public Boton(String texto, Estilo estilo) {
         this(texto);
         setEstilo(estilo);
     }
 
+    /**
+     * Establece el estilo del botón y actualiza el color de su texto.
+     *
+     * @param estilo estilo con el que se dibuja el botón
+     */
     public void setEstilo(Estilo estilo) {
         this.estilo = estilo;
 
         // el texto cambia de color según el estilo elegido
-        setForeground(estilo == Estilo.OSCURO ? Color.WHITE
+        setForeground(estilo == Estilo.OSCURO ? Tema.TINTA_TERRACOTA
                 : estilo == Estilo.CLARO ? Tema.TEXTO
                 : estilo == Estilo.SALIDA ? Tema.TEXTO_CLARO
                 : estilo == Estilo.TEXTO ? Tema.conAlfa(Tema.TEXTO_CLARO, 210) : Tema.TINTA_TERRACOTA);
         repaint();
     }
 
+    /**
+     * Dibuja el fondo redondeado según el estilo y el estado del botón, y
+     * luego su contenido.
+     *
+     * @param g contexto gráfico donde se dibuja
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = Tema.suavizar(g);

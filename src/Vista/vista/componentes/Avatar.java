@@ -11,13 +11,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
-
- avatar circular con un anillo degradado y un libro abierto en el centro
- todo se dibuja con vectores para poder ajustar el tamaño sin perder calidad*/
+ * Avatar circular con un anillo degradado y un libro abierto en el centro.
+ * Todo se dibuja con vectores para poder ajustar el tamaño sin perder
+ * calidad.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 public class Avatar extends JComponent {
 
+    /**
+     * Diámetro del avatar en píxeles.
+     */
     private final int diametro;
 
+    /**
+     * Crea el avatar con el diámetro indicado y fija su tamaño.
+     *
+     * @param diametro diámetro del avatar en píxeles
+     */
     public Avatar(int diametro) {
         this.diametro = diametro;
 
@@ -28,6 +40,12 @@ public class Avatar extends JComponent {
         setMaximumSize(d);
     }
 
+    /**
+     * Crea las imágenes del avatar en distintos tamaños para usarlas como
+     * íconos de la ventana.
+     *
+     * @return la lista de imágenes para los íconos
+     */
     public static List<Image> iconosDeVentana() {
         List<Image> iconos = new ArrayList<>();
         for (int lado : new int[]{16, 24, 32, 48, 64}) {
@@ -42,6 +60,12 @@ public class Avatar extends JComponent {
         return iconos;
     }
 
+    /**
+     * Dibuja el círculo con su borde degradado y el libro abierto en el
+     * centro.
+     *
+     * @param g contexto gráfico donde se dibuja
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = Tema.suavizar(g);

@@ -7,23 +7,59 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
-// grafico de barras con una grilla suave y una leyenda numerada a la derecha
+/**
+ * Gráfico de barras con una grilla suave y una leyenda numerada a la
+ * derecha.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 public class GraficoBarras extends JComponent {
 
+    /**
+     * Nombres que se muestran en la leyenda, uno por cada barra.
+     */
     private List<String> nombres = new ArrayList<>();
+
+    /**
+     * Valores que se grafican, uno por cada barra.
+     */
     private List<Integer> valores = new ArrayList<>();
+
+    /**
+     * Mensaje que se muestra cuando no hay datos para graficar.
+     */
     private String vacio = "Todavía no hay datos.";
+
+    /**
+     * Texto de ayuda que se muestra debajo del mensaje vacío.
+     */
     private String ayuda = "";
 
+    /**
+     * Crea el gráfico con su tamaño preferido.
+     */
     public GraficoBarras() {
         setPreferredSize(new Dimension(520, 260));
     }
 
+    /**
+     * Establece el texto de ayuda que se muestra cuando no hay datos.
+     *
+     * @param ayuda texto de ayuda
+     */
     public void setAyuda(String ayuda) {
         this.ayuda = ayuda;
         repaint();
     }
 
+    /**
+     * Establece los datos que se grafican y vuelve a dibujar el gráfico.
+     *
+     * @param nombres      nombres de cada barra para la leyenda
+     * @param valores      valor de cada barra
+     * @param mensajeVacio mensaje que se muestra si no hay valores para graficar
+     */
     public void setDatos(List<String> nombres, List<Integer> valores, String mensajeVacio) {
         this.nombres = nombres;
         this.valores = valores;
@@ -31,6 +67,12 @@ public class GraficoBarras extends JComponent {
         repaint();
     }
 
+    /**
+     * Dibuja el gráfico: la grilla, las barras con sus valores y la leyenda,
+     * o un mensaje si no hay datos.
+     *
+     * @param g contexto gráfico donde se dibuja
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2 = Tema.suavizar(g);
@@ -38,7 +80,7 @@ public class GraficoBarras extends JComponent {
 
         int max = 0;
         for (int v : valores) max = Math.max(max, v);
-        
+
         // muestra un mensaje si todavia no hay valores para graficar
         if (valores.isEmpty() || max == 0) {
             int icono = 72;
@@ -115,6 +157,15 @@ public class GraficoBarras extends JComponent {
         g2.dispose();
     }
 
+    /**
+     * Recorta un texto con puntos suspensivos si no entra en el ancho
+     * indicado.
+     *
+     * @param texto texto a recortar
+     * @param fm    métricas de la fuente con la que se dibuja el texto
+     * @param ancho ancho máximo disponible en píxeles
+     * @return el texto original, o el texto recortado con "…" al final
+     */
     private static String recortar(String texto, FontMetrics fm, int ancho) {
         if (fm.stringWidth(texto) <= ancho) return texto;
         String s = texto;
