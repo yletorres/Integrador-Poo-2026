@@ -17,27 +17,93 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-// pantalla principal con un resumen de la biblioteca y el estado de los prestamos
-// los datos se obtienen del controlador y se actualizan cada vez que se refresca el panel
+/**
+ * Pantalla principal con un resumen de la biblioteca y el estado de los
+ * préstamos. Los datos se obtienen del controlador y se actualizan cada vez
+ * que se refresca el panel.
+ *
+ * @author Yleana Torres
+ * @version TP7 - 2026
+ */
 class PanelInicio extends PanelSeccion {
 
+    /**
+     * Cantidad máxima de socios que se muestran en el gráfico de barras.
+     */
     private static final int MAX_BARRAS = 7;
 
+    /**
+     * Controlador que provee los datos de la biblioteca.
+     */
     private final BibliotecaController controlador;
+
+    /**
+     * Proveedor del nombre de la biblioteca activa.
+     */
     private final Supplier<String> bibliotecaActiva;
 
+    /**
+     * Saludo según la hora del día.
+     */
     private final JLabel saludo = new JLabel();
+
+    /**
+     * Fecha actual en formato largo.
+     */
     private final JLabel fecha = new JLabel();
+
+    /**
+     * Nombre de la biblioteca activa.
+     */
     private final JLabel nombre = new JLabel();
+
+    /**
+     * Cantidad de libros y de socios de la biblioteca.
+     */
     private final JLabel detalleBiblioteca = new JLabel();
+
+    /**
+     * Texto con la cantidad de libros prestados sobre el total.
+     */
     private final JLabel resumen = new JLabel();
-    private final Anillo anilloResumen = new Anillo(Tema.conAlfa(Color.WHITE, 110), Tema.CAFE_OSCURO, Tema.TINTA_TERRACOTA, 11f);
+
+    /**
+     * Anillo que muestra la proporción de libros prestados.
+     */
+    private final Anillo anilloResumen = new Anillo(Tema.conAlfa(Tema.TINTA_TERRACOTA, 110), Tema.CAFE_OSCURO, Tema.TINTA_TERRACOTA, 11f);
+
+    /**
+     * Gráfico de barras con los libros prestados por socio.
+     */
     private final GraficoBarras grafico = new GraficoBarras();
+
+    /**
+     * Anillo que muestra la proporción de socios con préstamos.
+     */
     private final Anillo anilloSocios = anilloEstado();
+
+    /**
+     * Anillo que muestra la proporción de docentes entre los socios.
+     */
     private final Anillo anilloDocentes = anilloEstado();
+
+    /**
+     * Detalle de los socios con préstamos.
+     */
     private final JLabel detalleSocios = new JLabel();
+
+    /**
+     * Detalle de los docentes entre los socios.
+     */
     private final JLabel detalleDocentes = new JLabel();
 
+    /**
+     * Construye la pantalla de inicio con las tarjetas de resumen, el
+     * gráfico y el estado de los préstamos.
+     *
+     * @param controlador      controlador que provee los datos de la biblioteca
+     * @param bibliotecaActiva proveedor del nombre de la biblioteca activa
+     */
     PanelInicio(BibliotecaController controlador, Supplier<String> bibliotecaActiva) {
         this.controlador = controlador;
         this.bibliotecaActiva = bibliotecaActiva;
@@ -68,7 +134,11 @@ class PanelInicio extends PanelSeccion {
         add(cuerpo, BorderLayout.CENTER);
     }
 
-    // bloques 
+    /**
+     * Crea la tarjeta con el logo, el nombre y el detalle de la biblioteca.
+     *
+     * @return la tarjeta de la biblioteca
+     */
     private Tarjeta tarjetaBiblioteca() {
         Tarjeta t = Tarjeta.degradada(36, 36, 80, 36);
         t.setLayout(new BorderLayout(22, 0));
@@ -84,6 +154,11 @@ class PanelInicio extends PanelSeccion {
         return t;
     }
 
+    /**
+     * Crea la tarjeta con el anillo de libros en circulación.
+     *
+     * @return la tarjeta del resumen
+     */
     private Tarjeta tarjetaResumen() {
         Tarjeta t = Tarjeta.degradada(80, 36, 36, 36);
         t.setLayout(new BorderLayout(22, 0));
@@ -98,6 +173,11 @@ class PanelInicio extends PanelSeccion {
         return t;
     }
 
+    /**
+     * Crea la tarjeta con el gráfico de libros prestados por socio.
+     *
+     * @return la tarjeta del gráfico
+     */
     private Tarjeta tarjetaGrafico() {
         Tarjeta t = new Tarjeta(Tema.PANEL, 32);
         t.setLayout(new BorderLayout(0, 10));
@@ -108,6 +188,11 @@ class PanelInicio extends PanelSeccion {
         return t;
     }
 
+    /**
+     * Crea la tarjeta con los anillos del estado de los préstamos.
+     *
+     * @return la tarjeta del estado
+     */
     private Tarjeta tarjetaEstado() {
         Tarjeta t = new Tarjeta(Tema.PANEL, 32);
         t.setLayout(new BorderLayout(0, 12));
@@ -122,14 +207,25 @@ class PanelInicio extends PanelSeccion {
         return t;
     }
 
-    // crea los anillos que muestran las proporciones del resumen
+    /**
+     * Crea los anillos que muestran las proporciones del resumen.
+     *
+     * @return el anillo configurado
+     */
     private static Anillo anilloEstado() {
         Anillo a = new Anillo(Tema.conAlfa(Tema.CARAMELO, 70), Tema.CARAMELO, Tema.TEXTO_CLARO, 10f);
         a.setPreferredSize(new Dimension(84, 84));
         return a;
     }
 
-    // acomoda el anillo y los textos de cada indicador
+    /**
+     * Acomoda el anillo y los textos de cada indicador.
+     *
+     * @param anillo  anillo del indicador
+     * @param titulo  título del indicador
+     * @param detalle etiqueta con el detalle del indicador
+     * @return el panel con el indicador armado
+     */
     private static JPanel filaEstado(Anillo anillo, String titulo, JLabel detalle) {
         JPanel p = new JPanel(new BorderLayout(16, 0));
         p.setOpaque(false);
@@ -143,12 +239,24 @@ class PanelInicio extends PanelSeccion {
         return p;
     }
 
+    /**
+     * Crea un subtítulo con el color claro para las tarjetas oscuras.
+     *
+     * @param texto texto del subtítulo
+     * @return la etiqueta con el subtítulo
+     */
     private static JLabel subtituloClaro(String texto) {
         JLabel l = subtitulo(texto);
         l.setForeground(Tema.TEXTO_CLARO);
         return l;
     }
 
+    /**
+     * Centra un componente en altura dentro de un panel.
+     *
+     * @param c componente a centrar
+     * @return el panel que contiene al componente
+     */
     private static JPanel centradoVertical(JComponent c) {
         JPanel p = new JPanel(new GridBagLayout());
         p.setOpaque(false);
@@ -156,7 +264,14 @@ class PanelInicio extends PanelSeccion {
         return p;
     }
 
-    // crea una etiqueta con el formato usado en las tarjetas
+    /**
+     * Crea una etiqueta con el formato usado en las tarjetas.
+     *
+     * @param s       texto de la etiqueta
+     * @param tamanio tamaño de la fuente
+     * @param estilo  estilo de la fuente
+     * @return la etiqueta creada
+     */
     private static JLabel texto(String s, int tamanio, int estilo) {
         JLabel l = new JLabel(s);
         l.setFont(Tema.sans(estilo, tamanio));
@@ -164,7 +279,12 @@ class PanelInicio extends PanelSeccion {
         return l;
     }
 
-    // acomoda varios componentes en una columna y los centra en altura
+    /**
+     * Acomoda varios componentes en una columna y los centra en altura.
+     *
+     * @param partes componentes a acomodar
+     * @return el panel con la columna armada
+     */
     private static JPanel columna(JComponent... partes) {
         JPanel p = new JPanel();
         p.setOpaque(false);
@@ -179,7 +299,10 @@ class PanelInicio extends PanelSeccion {
         return p;
     }
 
-    // datos 
+    /**
+     * Actualiza el saludo, la fecha, los anillos y el gráfico con los datos
+     * actuales de la biblioteca.
+     */
     @Override
     void refrescar() {
         int hora = LocalTime.now().getHour();
@@ -224,12 +347,23 @@ class PanelInicio extends PanelSeccion {
         grafico.setDatos(nombres, valores, "Ningún socio tiene libros prestados.");
     }
 
-    // obtiene la cantidad de libros prestados de la cuarta columna de filasSocios
+    /**
+     * Obtiene la cantidad de libros prestados de la cuarta columna de
+     * filasSocios.
+     *
+     * @param fila fila de datos de un socio
+     * @return la cantidad de libros prestados por el socio
+     */
     private static int cantidad(Object[] fila) {
         return ((Number) fila[3]).intValue();
     }
 
-    // convierte una proporcion en un porcentaje para mostrar en pantalla
+    /**
+     * Convierte una proporción en un porcentaje para mostrar en pantalla.
+     *
+     * @param proporcion valor entre 0 y 1
+     * @return el porcentaje como texto, por ejemplo "45%"
+     */
     private static String porcentaje(double proporcion) {
         return Math.round(proporcion * 100) + "%";
     }
