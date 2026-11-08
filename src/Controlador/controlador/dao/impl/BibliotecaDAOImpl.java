@@ -34,6 +34,16 @@ public class BibliotecaDAOImpl implements BibliotecaDAO {
 
     private static final String SQL_INSERTAR = "INSERT INTO biblioteca (nombre) VALUES (?)";
 
+    private static final String[] SQL_ELIMINAR_EN_CASCADA = {
+            "DELETE FROM prestamo WHERE idLibro IN (SELECT idLibro FROM libro WHERE idBiblioteca = ?)",
+            "DELETE FROM prestamo WHERE dniSocio IN (SELECT dniSocio FROM socio WHERE idBiblioteca = ?)",
+            "DELETE FROM docente WHERE dniSocio IN (SELECT dniSocio FROM socio WHERE idBiblioteca = ?)",
+            "DELETE FROM estudiante WHERE dniSocio IN (SELECT dniSocio FROM socio WHERE idBiblioteca = ?)",
+            "DELETE FROM socio WHERE idBiblioteca = ?",
+            "DELETE FROM libro WHERE idBiblioteca = ?",
+            "DELETE FROM biblioteca WHERE idBiblioteca = ?"
+    };
+
     // ====================== ATRIBUTOS ======================
 
     private Connection conexion;
@@ -148,5 +158,38 @@ public class BibliotecaDAOImpl implements BibliotecaDAO {
             System.err.println("[BibliotecaDAO] Error al insertar: " + e.getMessage());
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public boolean eliminar(int p_idBiblioteca) {
+        boolean eliminada = false;
+        try {
+            this.conexion.setAutoCommit(false);
+            // todo en una transacción: o se borra la biblioteca completa o no se borra nada
+            for (String sql : SQL_ELIMINAR_EN_CASCADA) {
+                try (PreparedStatement ps = this.conexion.prepareStatement(sql)) {
+                    ps.setInt(1, p_idBiblioteca);
+                    int filas = ps.executeUpdate();
+                    if (sql.startsWith("DELETE FROM biblioteca")) {
+                        eliminada = filas > 0;
+                    }
+                }
+            }
+            this.conexion.commit();
+            System.out.println("[BibliotecaDAO] Biblioteca eliminada (id=" + p_idBiblioteca + ")");
+        } catch (SQLException e) {
+            System.err.println("[BibliotecaDAO] Error al eliminar: " + e.getMessage());
+            try {
+                this.conexion.rollback();
+            } catch (SQLException ignorada) {
+            }
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                this.conexion.setAutoCommit(true);
+            } catch (SQLException ignorada) {
+            }
+        }
+        return eliminada;
     }
 }

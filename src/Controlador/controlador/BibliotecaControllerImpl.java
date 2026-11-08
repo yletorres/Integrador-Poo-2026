@@ -20,7 +20,6 @@ import controlador.dao.impl.PrestamoDAOImpl;
 import controlador.dao.impl.SocioDAOImpl;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -217,6 +216,18 @@ public class BibliotecaControllerImpl implements BibliotecaController {
         this.getBibliotecaDAO().insertar(biblioteca);
 
         this.seleccionarBiblioteca(p_nombre);
+    }
+
+    @Override
+    public void eliminarBibliotecaSeleccionada() {
+        this.bibliotecaActiva();
+
+        if (!this.getBibliotecaDAO().eliminar(this.getIdBibliotecaSeleccionada())) {
+            throw new IllegalStateException("No se pudo eliminar la biblioteca.");
+        }
+
+        this.setBibliotecaSeleccionada(null);
+        this.setIdBibliotecaSeleccionada(-1);
     }
 
     // >>> libros <<<<

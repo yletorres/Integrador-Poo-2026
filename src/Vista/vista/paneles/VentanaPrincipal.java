@@ -165,7 +165,9 @@ public class VentanaPrincipal extends JFrame {
 
         // cambia la biblioteca activa y actualiza los datos de la pantalla actual
         selector.addActionListener(e -> {
-            controlador.seleccionarBiblioteca((String) selector.getSelectedItem());
+            if (selector.getSelectedItem() != null) {
+                controlador.seleccionarBiblioteca((String) selector.getSelectedItem());
+            }
             refrescarVisible();
         });
 
@@ -181,6 +183,10 @@ public class VentanaPrincipal extends JFrame {
         Boton nueva = new Boton("Nueva biblioteca", Boton.Estilo.TEXTO);
         nueva.addActionListener(e -> nuevaBiblioteca());
         menu.add(conMargen(nueva, 36));
+
+        Boton eliminar = new Boton("Eliminar biblioteca", Boton.Estilo.TEXTO);
+        eliminar.addActionListener(e -> eliminarBiblioteca());
+        menu.add(conMargen(eliminar, 36));
         menu.add(Box.createVerticalStrut(20));
 
         // crea los botones del menu y los conecta con cada pantalla
@@ -237,6 +243,36 @@ public class VentanaPrincipal extends JFrame {
             refrescarVisible();
         } catch (RuntimeException ex) {
             JOptionPane.showMessageDialog(this, "No se pudo crear la biblioteca: " + ex.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    /**
+     * Elimina la biblioteca activa (con sus libros, socios y préstamos) después de
+     * pedir confirmación, y deja seleccionada otra si queda alguna.
+     */
+    private void eliminarBiblioteca() {
+        String nombre = (String) selector.getSelectedItem();
+        if (nombre == null) {
+            JOptionPane.showMessageDialog(this, "No hay ninguna biblioteca para eliminar.",
+                    "Sin biblioteca", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int respuesta = JOptionPane.showConfirmDialog(this,
+                "¿Eliminar la biblioteca \"" + nombre + "\"?\n"
+                        + "Se borrarán también todos sus libros, socios y préstamos. "
+                        + "Esta acción no se puede deshacer.",
+                "Eliminar biblioteca", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        if (respuesta != JOptionPane.YES_OPTION) {
+            return;
+        }
+        try {
+            controlador.eliminarBibliotecaSeleccionada();
+            // al quitar el item el selector elige otro y dispara el cambio de biblioteca
+            selector.removeItem(nombre);
+            refrescarVisible();
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(this, "No se pudo eliminar la biblioteca: " + ex.getMessage(),
                     "Error", JOptionPane.ERROR_MESSAGE);
         }
     }

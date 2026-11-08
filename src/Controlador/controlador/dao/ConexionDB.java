@@ -10,6 +10,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Gestiona la conexión JDBC a la base de datos SQLite {@code biblioteca.db}.
@@ -48,19 +50,21 @@ public class ConexionDB {
      */
     public static Connection getConexion() throws SQLException {
         if (conexion == null || conexion.isClosed()) {
-            conexion = DriverManager.getConnection("jdbc:sqlite:" + rutaBase());
+            Path ruta = rutaBase();
+            conexion = DriverManager.getConnection("jdbc:sqlite:" + ruta);
             // Activar claves foráneas (SQLite las ignora por defecto)
             Statement stmt = conexion.createStatement();
             stmt.execute("PRAGMA foreign_keys = ON");
             stmt.close();
-            System.out.println("[ConexionDB] Conexión establecida con biblioteca.db");
+            System.out.println("[ConexionDB] Conexión establecida con " + ruta);
         }
         return conexion;
     }
 
     private static Path rutaBase() throws SQLException {
-        if (Files.exists(BASE_DESARROLLO)) {
-            return BASE_DESARROLLO.toAbsolutePath();
+        Path desarrollo = buscarBaseDeDesarrollo();
+        if (desarrollo != null) {
+            return desarrollo;
         }
         String datos = System.getenv("APPDATA");
         Path carpeta = datos != null ? Paths.get(datos, "Biblioteca")
@@ -78,6 +82,35 @@ public class ConexionDB {
             }
         }
         return base;
+    }
+
+    /**
+     * Busca {@code src/Recursos/biblioteca.db} del proyecto subiendo desde el directorio
+     * de trabajo y desde donde están las clases compiladas. Así la base es siempre la misma
+     * aunque el programa se ejecute desde el IDE, desde {@code target} o desde otra carpeta.
+     *
+     * @return ruta de la base del proyecto, o null si no se ejecuta desde el código fuente
+     */
+    private static Path buscarBaseDeDesarrollo() {
+        List<Path> inicios = new ArrayList<>();
+        inicios.add(Paths.get("").toAbsolutePath());
+        try {
+            inicios.add(Paths.get(ConexionDB.class.getProtectionDomain()
+                    .getCodeSource().getLocation().toURI()).toAbsolutePath());
+        } catch (Exception ignorada) {
+            // sin ubicación de clases: se usa solo el directorio de trabajo
+        }
+        for (Path inicio : inicios) {
+            Path actual = inicio;
+            for (int nivel = 0; actual != null && nivel < 6; nivel++) {
+                Path candidata = actual.resolve(BASE_DESARROLLO);
+                if (Files.exists(candidata)) {
+                    return candidata;
+                }
+                actual = actual.getParent();
+            }
+        }
+        return null;
     }
 
     /**

@@ -40,6 +40,14 @@ public interface BibliotecaController { /* define métodos que otras clases est�
      */
     public abstract void crearBiblioteca(String p_nombre);
 
+    /**
+     * Elimina la biblioteca seleccionada junto con sus libros, socios y préstamos.
+     * Después de eliminarla no queda ninguna biblioteca seleccionada.
+     *
+     * @throws IllegalStateException si no hay una biblioteca seleccionada
+     */
+    public abstract void eliminarBibliotecaSeleccionada();
+
     // >>> libros <<<<
 
     /**

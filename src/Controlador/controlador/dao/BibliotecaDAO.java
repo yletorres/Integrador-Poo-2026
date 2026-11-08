@@ -40,4 +40,12 @@ public interface BibliotecaDAO {
          * @param p_biblioteca biblioteca que se desea insertar
          */
         void insertar(Biblioteca p_biblioteca);
+
+        /**
+         * Elimina una biblioteca con todos sus libros, socios y préstamos.
+         *
+         * @param p_idBiblioteca id de la biblioteca a eliminar
+         * @return true si se eliminó la biblioteca
+         */
+        boolean eliminar(int p_idBiblioteca);
 }

@@ -1,8 +1,5 @@
 package biblioteca.socio;
 
-import biblioteca.prestamo.Prestamo;
-
-import java.util.Calendar;
 
 /**
  * Representa a un estudiante que es socio de la institución.
