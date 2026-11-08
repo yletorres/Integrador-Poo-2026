@@ -290,50 +290,6 @@ public class BibliotecaControllerImpl implements BibliotecaController {
         biblioteca.agregarLibro(libro);
     }
 
-    @Override
-    public List<Object[]> filasLibrosConId() {
-        List<Object[]> filas = new ArrayList<>();
-
-        if (this.getBibliotecaSeleccionada() == null) {
-            return filas;
-        }
-
-        for (Libro libroActual : this.getBibliotecaSeleccionada().getLibros()) {
-            String prestado = libroActual.prestado() ? "Si" : "No";
-
-            Object[] fila = {
-
-                    libroActual.getTitulo(),
-                    libroActual.getEdicion(),
-                    libroActual.getEditorial(),
-                    libroActual.getAnio(),
-                    prestado
-            };
-
-            filas.add(fila);
-        }
-
-        return filas;
-    }
-
-    @Override
-    public void eliminarLibro(int p_idLibro) {
-        Biblioteca biblioteca = this.bibliotecaActiva();
-
-        //Libro libro = this.buscarLibroPorId(p_idLibro);
-
-        if (libro == null) {
-            throw new IllegalArgumentException("No existe un libro con ese id");
-        }
-
-        if (libro.prestado()) {
-            throw new IllegalStateException("No se puede eliminar un libro que está prestado");
-        }
-
-        // Primero se borra de la base de datos; si falla, el modelo no cambia.
-       // this.getLibroDAO().eliminar(p_idLibro);
-        biblioteca.quitarLibro(libro);
-    }
 
     // >>> socios <<<
 

@@ -51,10 +51,6 @@ public interface BibliotecaController { /* define m√©todos que otras clases est√
      */
     public abstract List<Object[]> filasLibros();
 
-    public abstract List<Object[]> filasLibrosConId();
-
-    public abstract void eliminarLibro(int p_idLibro);
-
     /**
      * Agrega un libro a la biblioteca seleccionada.
      *
