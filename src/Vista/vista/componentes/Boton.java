@@ -4,6 +4,8 @@ import vista.Tema;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -13,10 +15,11 @@ import java.awt.event.MouseEvent;
     */
 public class Boton extends JButton {
 
-    public enum Estilo { PRINCIPAL, OSCURO, CLARO }
+    public enum Estilo { PRINCIPAL, OSCURO, CLARO, SALIDA }
 
     private Estilo estilo = Estilo.PRINCIPAL;
     private boolean encima;
+    private boolean focoPorMouse;
 
     public Boton(String texto) {
         super(texto);
@@ -34,6 +37,10 @@ public class Boton extends JButton {
         addMouseListener(new MouseAdapter() {
             @Override public void mouseEntered(MouseEvent e) { encima = true; repaint(); }
             @Override public void mouseExited(MouseEvent e) { encima = false; repaint(); }
+            @Override public void mousePressed(MouseEvent e) { focoPorMouse = true; }
+        });
+        addFocusListener(new FocusAdapter() {
+            @Override public void focusLost(FocusEvent e) { focoPorMouse = false; repaint(); }
         });
     }
 
@@ -47,7 +54,8 @@ public class Boton extends JButton {
         
         // el texto cambia de color según el estilo elegido
         setForeground(estilo == Estilo.OSCURO ? Color.WHITE
-                : estilo == Estilo.CLARO ? Tema.TEXTO : Tema.TINTA_MENTA);
+                : estilo == Estilo.CLARO ? Tema.TEXTO
+                : estilo == Estilo.SALIDA ? Tema.TEXTO_CLARO : Tema.TINTA_TERRACOTA);
         repaint();
     }
 
@@ -60,21 +68,28 @@ public class Boton extends JButton {
         if (!isEnabled()) {
             g2.setColor(Tema.LINEA);
         } else if (estilo == Estilo.OSCURO) {
-            g2.setColor(encima ? new Color(0x4C5252) : Tema.CARBON_2);
+            g2.setColor(encima ? Tema.PANEL : Tema.CAFE);
+        } else if (estilo == Estilo.SALIDA) {
+            g2.setColor(encima ? Tema.CAFE : Tema.conAlfa(Tema.CAFE, 0));
         } else if (estilo == Estilo.CLARO) {
             g2.setColor(encima ? Tema.SELECCION : Tema.LINEA);
         } else if (encima) {
-            g2.setPaint(new GradientPaint(0, 0, Tema.MENTA_OSC, w, h, new Color(0x0E9FCC)));
+            g2.setPaint(new GradientPaint(0, 0, Tema.TERRACOTA_OSC, w, h, Tema.TERRACOTA));
         } else {
             g2.setPaint(Tema.degradado(w, h));
         }
         
         // dibujamos el fondo redondeado
         g2.fillRoundRect(0, 0, w, h, h, h);
+        if (estilo == Estilo.SALIDA && isEnabled()) {
+            g2.setColor(Tema.conAlfa(Tema.TEXTO_CLARO, 120));
+            g2.setStroke(new BasicStroke(1.5f));
+            g2.drawRoundRect(1, 1, w - 3, h - 3, h - 2, h - 2);
+        }
         
         // marcamos el contorno cuando el botón recibe el foco del teclado
-        if (isFocusOwner()) {
-            g2.setColor(estilo == Estilo.OSCURO ? Tema.MENTA : Tema.CARBON);
+        if (isFocusOwner() && !focoPorMouse) {
+            g2.setColor(estilo == Estilo.OSCURO || estilo == Estilo.SALIDA ? Tema.TERRACOTA : Tema.CAFE_OSCURO);
             g2.setStroke(new BasicStroke(2f));
             g2.drawRoundRect(2, 2, w - 5, h - 5, h, h);
         }

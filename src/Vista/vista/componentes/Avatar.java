@@ -34,15 +34,15 @@ public class Avatar extends JComponent {
         double m = grosor / 2 + 1, d = diametro - 2 * m;
 
         // dibujamos el fondo circular y después el borde con degradado
-        g2.setColor(Tema.CARBON_2);
+        g2.setColor(Tema.CAFE);
         g2.fill(new Ellipse2D.Double(m, m, d, d));
-        g2.setPaint(new GradientPaint(0, 0, Tema.MENTA, diametro, diametro, Tema.CELESTE));
+        g2.setPaint(new GradientPaint(0, 0, Tema.TERRACOTA, diametro, diametro, Tema.CARAMELO));
         g2.setStroke(new BasicStroke(grosor));
         g2.draw(new Ellipse2D.Double(m, m, d, d));
 
         // dibujamos las dos páginas del libro dejando una pequeña separación en el centro
         double c = diametro / 2.0, u = diametro / 100.0;
-        g2.setPaint(new GradientPaint(0, 0, Tema.MENTA, diametro, diametro, Tema.CELESTE));
+        g2.setPaint(new GradientPaint(0, 0, Tema.TERRACOTA, diametro, diametro, Tema.CARAMELO));
         
         // usamos el mismo trazado para ambos lados cambiando la dirección
         for (int lado = -1; lado <= 1; lado += 2) {

@@ -14,20 +14,20 @@ public final class Tema {
     private Tema() { }
 
     // paleta
-    public static final Color CARBON       = new Color(0x3B2A22); // menú lateral, barras oscuras
-    public static final Color CARBON_2     = new Color(0x4F382E); // elementos sobre el carbón
-    public static final Color MENTA        = new Color(0x9E4739); // acento principal
-    public static final Color MENTA_OSC    = new Color(0x7A3429);
-    public static final Color CELESTE      = new Color(0xD4A373); // fin del degradado
-    public static final Color TINTA_MENTA  = new Color(0xFFF3E0); // texto sobre menta/celeste
-    public static final Color ACENTO_TEXTO = new Color(0x9E4739); // menta legible sobre gris claro
-    public static final Color FONDO        = new Color(0xEBDCC4); // fondo general
-    public static final Color PANEL        = new Color(0x5C3A21); // paneles y tarjetas
-    public static final Color SELECCION    = new Color(0xCAA374); // fila seleccionada
-    public static final Color LINEA        = new Color(0xCBB79E);
-    public static final Color TEXTO        = new Color(0x3B2A22);
-    public static final Color TEXTO_SUAVE  = new Color(0x7A6555);
-    public static final Color TEXTO_CLARO  = new Color(0xF3E8D6);
+    public static final Color CAFE_OSCURO     = new Color(0x3B2A22); // menú lateral, barras oscuras
+    public static final Color CAFE            = new Color(0x4F382E); // elementos sobre el café oscuro
+    public static final Color TERRACOTA       = new Color(0x9E4739); // acento principal
+    public static final Color TERRACOTA_OSC   = new Color(0x7A3429);
+    public static final Color CARAMELO        = new Color(0xD4A373); // fin del degradado
+    public static final Color TINTA_TERRACOTA = new Color(0xFFF3E0); // texto sobre terracota/caramelo
+    public static final Color ACENTO_TEXTO    = new Color(0x9E4739); // terracota legible sobre gris claro
+    public static final Color FONDO           = new Color(0xEBDCC4); // fondo general
+    public static final Color PANEL           = new Color(0x5C3A21); // paneles y tarjetas
+    public static final Color SELECCION       = new Color(0xCAA374); // fila seleccionada
+    public static final Color LINEA           = new Color(0xCBB79E);
+    public static final Color TEXTO           = new Color(0x3B2A22);
+    public static final Color TEXTO_SUAVE     = new Color(0x7A6555);
+    public static final Color TEXTO_CLARO     = new Color(0xF3E8D6);
 
     // busca las fuentes disponibles para usar las primeras que encuentre
     private static final Set<String> FAMILIAS = new HashSet<>(Arrays.asList(
@@ -88,9 +88,9 @@ public final class Tema {
         return p;
     }
 
-    // genera el degradado diagonal de menta a celeste
+    // genera el degradado diagonal de terracota a caramelo
     public static Paint degradado(int ancho, int alto) {
-        return new GradientPaint(0, 0, MENTA, ancho, alto, CELESTE);
+        return new GradientPaint(0, 0, TERRACOTA, ancho, alto, CARAMELO);
     }
 
     // configura las fuentes que usan los componentes estandar de swing

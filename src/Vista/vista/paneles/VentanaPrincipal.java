@@ -6,11 +6,14 @@ import vista.componentes.Avatar;
 import vista.componentes.Boton;
 import vista.componentes.BotonMenu;
 import vista.componentes.FondoOscuro;
+import vista.componentes.Icono;
 import vista.componentes.Selector;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,6 +38,7 @@ public class VentanaPrincipal extends JFrame {
         setMinimumSize(new Dimension(1100, 700));
         setSize(1260, 800);
         setLocationRelativeTo(null);
+        setIconImages(iconosDeVentana());
         getContentPane().setBackground(Tema.FONDO);
         setLayout(new BorderLayout());
 
@@ -43,18 +47,16 @@ public class VentanaPrincipal extends JFrame {
         add(contenido, BorderLayout.CENTER);
 
         agregar("Inicio", new PanelInicio(controlador, this::nombreDeBiblioteca));
-<<<<<<< HEAD
         agregar("Libros", new PanelTabla("Libros", "Todos los ejemplares del catálogo",
                 new String[]{"Título", "Edición", "Editorial", "Año", "Prestado"}, 0, controlador::filasLibros));
         agregar("Socios", new PanelTabla("Socios", "Docentes y estudiantes registrados",
                 new String[]{"D.N.I.", "Nombre", "Tipo", "Libros prestados"}, 1, controlador::filasSocios));
         agregar("Préstamos", new PanelPrestamos(controlador));
-=======
+
         agregar("Libros", new PanelLibros(controlador));
         agregar("Socios", new PanelSocios(controlador));
         agregar("Préstamos", new PanelPendiente("Préstamos", "Retiros y devoluciones",
                 "Acá vas a poder registrar un préstamo y una devolución."));
->>>>>>> feature/iara-menu-libros-socios
         agregar("Listados", new PanelListados(controlador));
         agregar("Informes", new PanelInformes(controlador));
 
@@ -120,14 +122,16 @@ public class VentanaPrincipal extends JFrame {
 
         // crea los botones del menu y los conecta con cada pantalla
         for (String nombre : new String[]{"Inicio", "Libros", "Socios", "Préstamos", "Listados", "Informes"}) {
-            BotonMenu boton = new BotonMenu(nombre);
+            BotonMenu boton = new BotonMenu(nombre, Icono.para(nombre, 20));
             boton.addActionListener(e -> mostrar(nombre));
             botones.put(nombre, boton);
             menu.add(boton);
         }
 
         menu.add(Box.createVerticalGlue());
-        Boton salir = new Boton("Salir");
+        Boton salir = new Boton("Salir", Boton.Estilo.SALIDA);
+        salir.setIcon(new Icono(Icono.Tipo.SALIR, 18));
+        salir.setIconTextGap(10);
         salir.addActionListener(e ->
                 dispatchEvent(new WindowEvent(VentanaPrincipal.this, WindowEvent.WINDOW_CLOSING)));
         menu.add(conMargen(salir, 48));
@@ -139,6 +143,20 @@ public class VentanaPrincipal extends JFrame {
         marco.setPreferredSize(new Dimension(268, 0));
         marco.add(menu, BorderLayout.CENTER);
         return marco;
+    }
+
+    private static java.util.List<Image> iconosDeVentana() {
+        java.util.List<Image> iconos = new ArrayList<>();
+        for (int lado : new int[]{16, 24, 32, 48, 64}) {
+            Avatar avatar = new Avatar(lado);
+            avatar.setSize(lado, lado);
+            BufferedImage img = new BufferedImage(lado, lado, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g = img.createGraphics();
+            avatar.paint(g);
+            g.dispose();
+            iconos.add(img);
+        }
+        return iconos;
     }
 
     // crea una etiqueta centrada con la fuente y el color indicados

@@ -4,6 +4,8 @@ import vista.Tema;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -12,6 +14,7 @@ public class BotonMenu extends JButton {
 
     private boolean activo;
     private boolean encima;
+    private boolean focoPorMouse;
 
     public BotonMenu(String texto) {
         super(texto);
@@ -28,12 +31,24 @@ public class BotonMenu extends JButton {
         addMouseListener(new MouseAdapter() {
             @Override public void mouseEntered(MouseEvent e) { encima = true; repaint(); }
             @Override public void mouseExited(MouseEvent e) { encima = false; repaint(); }
+            @Override public void mousePressed(MouseEvent e) { focoPorMouse = true; }
         });
+        addFocusListener(new FocusAdapter() {
+            @Override public void focusLost(FocusEvent e) { focoPorMouse = false; repaint(); }
+        });
+    }
+
+    public BotonMenu(String texto, Icon icono) {
+        this(texto);
+        setIcon(icono);
+        setIconTextGap(14);
+        setHorizontalAlignment(LEFT);
+        setBorder(BorderFactory.createEmptyBorder(12, 40, 12, 12));
     }
 
     public void setActivo(boolean activo) {
         this.activo = activo;
-        setForeground(activo ? Tema.TINTA_MENTA : Tema.TEXTO_CLARO);
+        setForeground(activo ? Tema.TINTA_TERRACOTA : Tema.TEXTO_CLARO);
         setFont(Tema.sans(activo ? Font.BOLD : Font.PLAIN, 14));
         repaint();
     }
@@ -45,18 +60,18 @@ public class BotonMenu extends JButton {
         
         // dibuja el fondo con degradado cuando la opcion esta seleccionada
         if (activo) {
-            g2.setPaint(new GradientPaint(x, y, Tema.MENTA, x + w, y + h, Tema.CELESTE));
+            g2.setPaint(new GradientPaint(x, y, Tema.TERRACOTA_OSC, x + w, y + h, Tema.TERRACOTA));
             g2.fillRoundRect(x, y, w, h, h, h);
         } else if (encima) {
             
             // marca el boton cuando el cursor pasa por encima
-            g2.setColor(Tema.CARBON_2);
+            g2.setColor(Tema.CAFE);
             g2.fillRoundRect(x, y, w, h, h, h);
         }
         
         // muestra un borde cuando el boton tiene el foco
-        if (isFocusOwner()) {
-            g2.setColor(Tema.MENTA);
+        if (isFocusOwner() && !focoPorMouse) {
+            g2.setColor(Tema.CARAMELO);
             g2.setStroke(new BasicStroke(2f));
             g2.drawRoundRect(x, y, w - 1, h - 1, h, h);
         }

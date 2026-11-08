@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
-// fondo oscuro con un brillo menta en la parte inferior
+// fondo oscuro con un brillo terracota en la parte inferior
 public class FondoOscuro extends JPanel {
 
     private final int radio;
@@ -23,11 +23,11 @@ public class FondoOscuro extends JPanel {
         Shape forma = new RoundRectangle2D.Float(0, 0, w, h, radio, radio);
         
         // pinta la base oscura y aplica el brillo en la parte baja
-        g2.setColor(Tema.CARBON);
+        g2.setColor(Tema.CAFE_OSCURO);
         g2.fill(forma);
         g2.setClip(forma);
-        g2.setPaint(new GradientPaint(0, h * 0.58f, Tema.conAlfa(Tema.MENTA, 0),
-                0, h, Tema.conAlfa(Tema.MENTA, 140)));
+        g2.setPaint(new GradientPaint(0, h * 0.58f, Tema.conAlfa(Tema.TERRACOTA, 0),
+                0, h, Tema.conAlfa(Tema.TERRACOTA, 140)));
         g2.fillRect(0, 0, w, h);
         g2.dispose();
     }
