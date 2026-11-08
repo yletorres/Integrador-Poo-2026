@@ -21,7 +21,6 @@ import java.util.List;
  * Controlador real de la biblioteca. Implementa el contrato que usa la vista
  * (BibliotecaController): trabaja sobre el modelo y persiste cada cambio a
  * través de las interfaces DAO.
- *
  * Contrato con el DAO: BibliotecaDAO.buscarPorNombre devuelve la biblioteca
  * ya armada desde la base de datos, con sus libros, socios y préstamos.
  *
