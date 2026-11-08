@@ -51,6 +51,10 @@ public interface BibliotecaController { /* define m√©todos que otras clases est√
      */
     public abstract List<Object[]> filasLibros();
 
+    public abstract List<Object[]> filasLibrosConId();
+
+    public abstract void eliminarLibro(int p_idLibro);
+
     /**
      * Agrega un libro a la biblioteca seleccionada.
      *
@@ -72,6 +76,7 @@ public interface BibliotecaController { /* define m√©todos que otras clases est√
      */
     public abstract List<Object[]> filasSocios();
 
+    public abstract void eliminarSocio(int p_dni);
     /**
      * Registra un socio estudiante en la biblioteca seleccionada.
      *

@@ -246,6 +246,40 @@ public class BibliotecaControllerImpl implements BibliotecaController {
     }
 
     @Override
+    public List<Object[]> filasLibrosConId() {
+        if (this.getBibliotecaSeleccionada() == null) {
+            return new ArrayList<>();
+        }
+
+        return this.getLibroDAO().obtenerFilasConIdPorBiblioteca( this.getIdBibliotecaSeleccionada());
+    }
+
+    @Override
+    public void eliminarLibro(int p_idLibro) {
+        Biblioteca biblioteca = this.bibliotecaActiva();
+
+        // Verificar que el libro no esté prestado.
+        for (Object[] fila : this.getLibroDAO().obtenerFilasConIdPorBiblioteca(this.getIdBibliotecaSeleccionada())) {
+
+            int idLibro = (int) fila[0];
+            String prestado = (String) fila[5];
+
+            if (idLibro == p_idLibro && "Si".equals(prestado)) {
+                throw new IllegalStateException("No se puede eliminar un libro que está prestado.");
+            }
+        }
+
+        boolean eliminado = this.getLibroDAO().eliminar(p_idLibro);
+
+        if (!eliminado) {
+            throw new IllegalStateException("No se pudo eliminar el libro. Puede tener préstamos asociados.");
+        }
+
+        // Recargar la biblioteca para actualizar los libros y sus préstamos.
+        this.setBibliotecaSeleccionada(this.getBibliotecaDAO().buscarPorNombre(biblioteca.getNombre()));
+    }
+
+    @Override
     public void nuevoLibro(String p_titulo, int p_edicion, String p_editorial, int p_anio) {
         Biblioteca biblioteca = this.bibliotecaActiva();
 
@@ -278,6 +312,30 @@ public class BibliotecaControllerImpl implements BibliotecaController {
         }
 
         return filas;
+    }
+
+    @Override
+    public void eliminarSocio(int p_dni) {
+        Biblioteca biblioteca = this.bibliotecaActiva();
+
+        Socio socio = biblioteca.buscarSocio(p_dni);
+
+        if (socio == null) {
+            throw new IllegalArgumentException("No se encontró el socio seleccionado.");
+        }
+
+        if (socio.cantLibrosPrestados() > 0) {
+            throw new IllegalStateException("No se puede eliminar un socio que tiene libros prestados.");
+        }
+
+        boolean eliminado = this.getSocioDAO().eliminar(
+                p_dni, socio.soyDeLaClase());
+
+        if (!eliminado) {
+            throw new IllegalStateException("No se pudo eliminar el socio. Puede tener préstamos asociados.");
+        }
+
+        biblioteca.quitarSocio(socio);
     }
 
     @Override
