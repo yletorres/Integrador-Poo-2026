@@ -137,7 +137,6 @@ public abstract class Socio {
      */
     public String toString() {
         return "D.N.I.: " + this.getDniSocio() + " || " + this.getNombre()
-                + " (" + this.soyDeLaClase() + ") || Libros Prestados: "
-                + this.cantLibrosPrestados();
+                + " (" + this.soyDeLaClase() + ");
     }
 }
